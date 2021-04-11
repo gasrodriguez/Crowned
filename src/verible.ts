@@ -42,17 +42,18 @@ export async function lint(document: vscode.TextDocument): Promise<vscode.Diagno
         });
         const lines = response.toString().split('\n');
         lines.forEach((line, i) => {
-            const [_, lineStr, colStr, message] = line.split(':');
+            const [_, lineStr, colStr, ...message] = line.split(':');
             const lineNum = Number(lineStr) - 1;
             const colNum = Number(colStr) - 1;
+            const messageStr = message.join(':');
             let severity = vscode.DiagnosticSeverity.Error;
-            if (message && message.search('error') === -1) {
+            if (message && messageStr.search('error') === -1) {
                 severity = vscode.DiagnosticSeverity.Warning;
             }
             diagnostics.push({
                 severity: severity,
                 range: new vscode.Range(lineNum, colNum, lineNum, Number.MAX_VALUE),
-                message: message,
+                message: messageStr,
                 code: i,
                 source: 'verible-verilog-lint'
             });
