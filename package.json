@@ -3,12 +3,31 @@
 	"displayName": "Crowned",
 	"description": "SystemVerilog Linter and Formatter with Verible",
 	"version": "0.0.1",
+    "publisher": "gasrodriguez",
+    "author": {
+        "name": "Gastón Rodriguez",
+        "email": "gastonerodriguez@gmail.com"
+    },
 	"engines": {
 		"vscode": "^1.55.0"
 	},
-	"categories": [
-		"Other"
-	],
+    "license": "MIT",
+    "categories": [
+        "Programming Languages",
+        "Snippets",
+        "Linters",
+        "Formatters"
+    ],
+    "keywords": [
+        "verilog",
+        "systemverilog",
+        "lsp",
+        "hdl"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/gasrodriguez/Crowned"
+    },
 	"activationEvents": [
 		"onLanguage:systemverilog",
 		"onLanguage:verilog",

@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as verible from './verible';
-import * as VHDLFormatter from './VHDLFormatter';
+// import * as VHDLFormatter from './VHDLFormatter';
 
 const extensionDisplayName = 'crowned';
 
@@ -13,9 +13,9 @@ let diagnosticCollection: vscode.DiagnosticCollection;
 export function activate(context: vscode.ExtensionContext) {
     console.log('Crowned extension activated.');
 
-    context.subscriptions.push(vscode.languages.registerDocumentRangeFormattingEditProvider(
-        languageIdVhdl, { provideDocumentRangeFormattingEdits: VHDLFormatter.format }
-    ));
+    // context.subscriptions.push(vscode.languages.registerDocumentRangeFormattingEditProvider(
+    //     languageIdVhdl, { provideDocumentRangeFormattingEdits: VHDLFormatter.format }
+    // ));
 
     context.subscriptions.push(vscode.languages.registerDocumentRangeFormattingEditProvider(
         languageIdVerilog, { provideDocumentRangeFormattingEdits: verible.format }
