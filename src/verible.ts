@@ -2,19 +2,22 @@ import * as vscode from 'vscode';
 import * as child from 'child_process';
 import * as path from 'path';
 
-export function format(document: vscode.TextDocument, range: vscode.Range): vscode.TextEdit[] {
+export function format(document: vscode.TextDocument, _options: vscode.FormattingOptions, _token: vscode.CancellationToken): vscode.TextEdit[] {
+    const range = new vscode.Range(document.lineAt(0).range.start,
+        document.lineAt(document.lineCount - 1).range.end);
     const config = vscode.workspace.getConfiguration();
     const formatCommand = config.get("crowned.formatCommand");
     if (formatCommand === "") { return []; }
     let command = [];
     command.push(formatCommand);
     command.push('--lines ' + range.start.line + '-' + range.end.line);
-    command.push(path.basename(document.uri.fsPath));
+    command.push('-');
     const commandStr = command.join(' ').trim();
     console.debug(commandStr);
     try {
         const response = child.execSync(commandStr, {
             cwd: path.dirname(document.uri.fsPath),
+            input: document.getText()
         });
         return [new vscode.TextEdit(range, response.toString())];
     }

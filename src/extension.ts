@@ -17,12 +17,12 @@ export function activate(context: vscode.ExtensionContext) {
     //     languageIdVhdl, { provideDocumentRangeFormattingEdits: VHDLFormatter.format }
     // ));
 
-    context.subscriptions.push(vscode.languages.registerDocumentRangeFormattingEditProvider(
-        languageIdVerilog, { provideDocumentRangeFormattingEdits: verible.format }
+    context.subscriptions.push(vscode.languages.registerDocumentFormattingEditProvider(
+        languageIdVerilog, { provideDocumentFormattingEdits: verible.format }
     ));
 
-    context.subscriptions.push(vscode.languages.registerDocumentRangeFormattingEditProvider(
-        languageIdSystemVerilog, { provideDocumentRangeFormattingEdits: verible.format }
+    context.subscriptions.push(vscode.languages.registerDocumentFormattingEditProvider(
+        languageIdSystemVerilog, { provideDocumentFormattingEdits: verible.format }
     ));
 
     diagnosticCollection = vscode.languages.createDiagnosticCollection(extensionDisplayName);
