@@ -26,9 +26,13 @@ export function activate(context: vscode.ExtensionContext) {
     ));
 
     diagnosticCollection = vscode.languages.createDiagnosticCollection(extensionDisplayName);
+    context.subscriptions.push(vscode.commands.registerCommand('crowned.clear_diagnostics', commandClearDiagnostics));
 
     context.subscriptions.push(
+        vscode.workspace.onDidOpenTextDocument(didSaveTextDocument),
         vscode.workspace.onDidSaveTextDocument(didSaveTextDocument),
+        vscode.workspace.onDidCloseTextDocument(didCloseTextDocument),
+        vscode.workspace.onDidRenameFiles(didRenameFiles),
     );
 }
 
@@ -48,6 +52,20 @@ function didSaveTextDocument(document: vscode.TextDocument) {
                 });
             break;
     }
+}
+
+function didCloseTextDocument(document: vscode.TextDocument) {
+    diagnosticCollection.delete(document.uri);
+}
+
+function didRenameFiles(e: vscode.FileRenameEvent) {
+    e.files.forEach(element => {
+        diagnosticCollection.delete(element.oldUri);
+    });
+}
+
+function commandClearDiagnostics() {
+    diagnosticCollection.clear();
 }
 
 // this method is called when your extension is deactivated
