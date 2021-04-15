@@ -24,7 +24,18 @@ This extension contributes the following settings:
 * `crowned.lintCommand` = `verible-verilog-lint` (default)
 * `crowned.formatCommand` = `verible-verilog-lint` (default)
 
-On linux you may leave the defaults. On Windows/WSL a little trick is required. To get the WSL path of the verible bin directory:
+On linux you may leave the defaults. On Windows/WSL, if verible binaries are copied in the path (e.g. `/usr/local/bin`) please add `wsl` at the beginning of the command:
+* `crowned.lintCommand` = `wsl verible-verilog-lint`
+* `crowned.formatCommand` = `wsl verible-verilog-lint`
+
+To make sure that your desired linux distro is chosen by `wsl <command>` you should select it as WSL default. Run:
+```
+$ wsl --list --all
+(prints all distro names)
+$wsl --setdefault <your-desired-distro-name>
+```
+
+As an alternative, verible binaries can be copied to any Windows folder. To find the path seen by WSL please run the following command:
 ```
 $ wsl wslpath <path-to-verible-bin>
 ```
@@ -34,8 +45,15 @@ $ wsl wslpath 'C:\FpgaTools\verible-v0.0-1051-gd4cd328\bin'
 /mnt/c/FpgaTools/verible-v0.0-1051-gd4cd328/bin
 ```
 Then set the configuration settings as:
-* `crowned.lintCommand` = `/mnt/c/FpgaTools/verible-v0.0-1051-gd4cd328/bin/verible-verilog-lint`
-* `crowned.formatCommand` = `/mnt/c/FpgaTools/verible-v0.0-1051-gd4cd328/bin/verible-verilog-format`
+* `crowned.lintCommand` = `wsl /mnt/c/FpgaTools/verible-v0.0-1051-gd4cd328/bin/verible-verilog-lint`
+* `crowned.formatCommand` = `wsl /mnt/c/FpgaTools/verible-v0.0-1051-gd4cd328/bin/verible-verilog-format`
+
+## Configuration files
+You can put configuration files for verible formatter and linter inside the `.verible` directory, in the workspace root.
+* `.verible/format.flags`: used by `verible-verilog-format --flagfile=...`
+* `.verible/lint.flags`: used by `verible-verilog-lint --flagfile=...`
+* `.verible/lint.rules`: used by `verible-verilog-lint --rules_config=...`
+* `.verible/lint.waiver`: used by `verible-verilog-lint --waiver_files=...`
 
 ## Known Issues
 

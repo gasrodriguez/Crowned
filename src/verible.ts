@@ -1,24 +1,48 @@
 import * as vscode from 'vscode';
 import * as child from 'child_process';
 import * as path from 'path';
+import * as fs from 'fs';
+
+const workingDir = ((document: vscode.TextDocument) => {
+    let cwd = path.dirname(document.uri.fsPath);
+    const wsFolder = vscode.workspace.getWorkspaceFolder(document.uri);
+    if (wsFolder) {
+        cwd = wsFolder.uri.fsPath;
+    }
+    return cwd;
+});
+
+const configFile = ((cwd: string, filename: string) => {
+    const fsPath = path.join(cwd, '.verible', filename);
+    if (fs.existsSync(fsPath)) {
+        return ".verible/" + filename;
+    } else {
+        return "";
+    }
+});
+
+const logCommand = ((cwd: string, command: string, document: vscode.TextDocument) => {
+    console.debug(cwd + '> ' + command.slice(0, -1) + path.basename(document.uri.fsPath));
+});
 
 export function format(document: vscode.TextDocument, _options: vscode.FormattingOptions, _token: vscode.CancellationToken): vscode.TextEdit[] {
-    const range = new vscode.Range(document.lineAt(0).range.start,
-        document.lineAt(document.lineCount - 1).range.end);
+    let cwd = workingDir(document);
     const config = vscode.workspace.getConfiguration();
     const formatCommand = config.get("crowned.formatCommand");
     if (formatCommand === "") { return []; }
     let command = [];
     command.push(formatCommand);
-    command.push('--lines ' + range.start.line + '-' + range.end.line);
+    command.push('--flagfile=' + configFile(cwd, 'format.flags'));
     command.push('-');
-    const commandStr = command.join(' ').trim();
-    console.debug(commandStr);
     try {
+        const commandStr = command.join(' ').trim();
+        logCommand(cwd, commandStr, document);
         const response = child.execSync(commandStr, {
-            cwd: path.dirname(document.uri.fsPath),
-            input: document.getText()
+            cwd: cwd,
+            input: document.getText(),
         });
+        const range = new vscode.Range(document.lineAt(0).range.start,
+            document.lineAt(document.lineCount - 1).range.end);
         return [new vscode.TextEdit(range, response.toString())];
     }
     catch (e: unknown) {
@@ -28,6 +52,7 @@ export function format(document: vscode.TextDocument, _options: vscode.Formattin
 }
 
 export async function lint(document: vscode.TextDocument): Promise<vscode.Diagnostic[]> {
+    let cwd = workingDir(document);
     const config = vscode.workspace.getConfiguration();
     const lintCommand = config.get("crowned.lintCommand");
     if (lintCommand === "") { return []; }
@@ -35,13 +60,17 @@ export async function lint(document: vscode.TextDocument): Promise<vscode.Diagno
     command.push(lintCommand);
     command.push('--lint_fatal=false');
     command.push('--parse_fatal=false');
-    command.push(path.basename(document.uri.fsPath));
-    const commandStr = command.join(' ').trim();
-    console.debug(commandStr);
+    command.push('--flagfile=' + configFile(cwd, 'lint.flags'));
+    command.push('--rules_config=' + configFile(cwd, 'lint.rules'));
+    command.push('--waiver_files=' + configFile(cwd, 'lint.waiver'));
+    command.push('-');
     let diagnostics: vscode.Diagnostic[] = [];
     try {
+        const commandStr = command.join(' ').trim();
+        logCommand(cwd, commandStr, document);
         const response = child.execSync(commandStr, {
             cwd: path.dirname(document.uri.fsPath),
+            input: document.getText(),
         });
         const lines = response.toString().split('\n');
         lines.forEach((line, i) => {
