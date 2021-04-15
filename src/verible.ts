@@ -12,6 +12,11 @@ const workingDir = ((document: vscode.TextDocument) => {
     return cwd;
 });
 
+const filePath = ((cwd: string, document: vscode.TextDocument) => {
+    const relPath = path.relative(cwd, document.uri.fsPath);
+    return relPath.replace(/\\/g, '/');
+});
+
 const configFile = ((cwd: string, filename: string) => {
     const fsPath = path.join(cwd, '.verible', filename);
     if (fs.existsSync(fsPath)) {
@@ -21,8 +26,8 @@ const configFile = ((cwd: string, filename: string) => {
     }
 });
 
-const logCommand = ((cwd: string, command: string, document: vscode.TextDocument) => {
-    console.debug(cwd + '> ' + command.slice(0, -1) + path.basename(document.uri.fsPath));
+const logCommand = ((cwd: string, command: string) => {
+    console.debug(cwd + '> ' + command);
 });
 
 export function format(document: vscode.TextDocument, _options: vscode.FormattingOptions, _token: vscode.CancellationToken): vscode.TextEdit[] {
@@ -33,13 +38,12 @@ export function format(document: vscode.TextDocument, _options: vscode.Formattin
     let command = [];
     command.push(formatCommand);
     command.push('--flagfile=' + configFile(cwd, 'format.flags'));
-    command.push('-');
+    command.push(filePath(cwd, document));
     try {
         const commandStr = command.join(' ').trim();
-        logCommand(cwd, commandStr, document);
+        logCommand(cwd, commandStr);
         const response = child.execSync(commandStr, {
             cwd: cwd,
-            input: document.getText(),
         });
         const range = new vscode.Range(document.lineAt(0).range.start,
             document.lineAt(document.lineCount - 1).range.end);
@@ -63,14 +67,13 @@ export async function lint(document: vscode.TextDocument): Promise<vscode.Diagno
     command.push('--flagfile=' + configFile(cwd, 'lint.flags'));
     command.push('--rules_config=' + configFile(cwd, 'lint.rules'));
     command.push('--waiver_files=' + configFile(cwd, 'lint.waiver'));
-    command.push('-');
+    command.push(filePath(cwd, document));
     let diagnostics: vscode.Diagnostic[] = [];
     try {
         const commandStr = command.join(' ').trim();
-        logCommand(cwd, commandStr, document);
+        logCommand(cwd, commandStr);
         const response = child.execSync(commandStr, {
-            cwd: path.dirname(document.uri.fsPath),
-            input: document.getText(),
+            cwd: cwd,
         });
         const lines = response.toString().split('\n');
         lines.forEach((line, i) => {
