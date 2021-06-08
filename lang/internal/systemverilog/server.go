@@ -1,15 +1,13 @@
 package systemverilog
 
 import (
-	"context"
 	"github.com/gasrodriguez/crowned/internal/util"
+	"github.com/gasrodriguez/crowned/pkg/server"
 	"go.lsp.dev/protocol"
 )
 
 type Server struct {
-	protocol.Server
-	Client protocol.Client
-	Ctx    context.Context
+	server.Server
 }
 
 func (s *Server) log(message string) {
