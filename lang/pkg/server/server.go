@@ -18,10 +18,10 @@ const (
 type Server struct {
 	protocol.Server
 	Client protocol.Client
-	Ctx    context.Context
 }
 
 func (o *Server) Run(ctx context.Context, args []string) error {
+	// ToDo: use server options
 	cfg := zap.NewDevelopmentConfig()
 	//cfg.OutputPaths = []string{
 	//	"log.txt",
@@ -35,8 +35,8 @@ func (o *Server) Run(ctx context.Context, args []string) error {
 	logger.Info("Starting up...")
 
 	stream := jsonrpc2.NewStream(Stdinout{})
-	var conn jsonrpc2.Conn
-	o.Ctx, conn, o.Client = protocol.NewServer(ctx, o, stream, logger)
+	ctx, conn, client := protocol.NewServer(ctx, o, stream, logger)
+	o.Client = client
 
 	select {
 	case <-ctx.Done():
@@ -53,5 +53,21 @@ func (o *Server) Run(ctx context.Context, args []string) error {
 
 func (o *Server) loggerSync(logger *zap.Logger) {
 	err := logger.Sync()
+	util.CheckError(err)
+}
+
+func (o *Server) LogMessage(message string) {
+	err := o.Client.LogMessage(context.TODO(), &protocol.LogMessageParams{
+		Message: message,
+		Type:    protocol.MessageTypeLog,
+	})
+	util.CheckError(err)
+}
+
+func (o *Server) LogError(message string) {
+	err := o.Client.LogMessage(context.TODO(), &protocol.LogMessageParams{
+		Message: message,
+		Type:    protocol.MessageTypeError,
+	})
 	util.CheckError(err)
 }

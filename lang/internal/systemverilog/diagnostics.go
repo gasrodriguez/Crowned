@@ -24,17 +24,17 @@ func (s *Server) DidSave(ctx context.Context, params *protocol.DidSaveTextDocume
 func (s *Server) publishDiagnostics(uri protocol.DocumentURI) {
 	diagnostics, cmd, err := verible.Lint(uri.Filename())
 	if err != nil {
-		s.error(fmt.Sprintf("Failed to lint file '%s', error '%e'", uri.Filename(), err))
+		s.LogError(fmt.Sprintf("Failed to lint file '%s', error '%e'", uri.Filename(), err))
 	}
-	s.log(cmd)
+	s.LogMessage(cmd)
 
-	err = s.Client.PublishDiagnostics(s.Ctx, &protocol.PublishDiagnosticsParams{
+	err = s.Client.PublishDiagnostics(context.TODO(), &protocol.PublishDiagnosticsParams{
 		URI:         uri,
 		Version:     0,
 		Diagnostics: diagnostics,
 	})
 
 	if err != nil {
-		s.error(fmt.Sprintf("Failed to publish diagnostics for file '%s', error '%e'", uri.Filename(), err))
+		s.LogError(fmt.Sprintf("Failed to publish diagnostics for file '%s', error '%e'", uri.Filename(), err))
 	}
 }
