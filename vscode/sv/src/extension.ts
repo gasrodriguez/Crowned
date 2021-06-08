@@ -1,73 +1,52 @@
 import * as vscode from 'vscode';
-import * as verible from './verible';
-// import * as VHDLFormatter from './VHDLFormatter';
+import * as vscodeClient from 'vscode-languageclient';
 
 const extensionDisplayName = 'crowned';
+const langServerCommand = 'crowned-lang-sv';
+const outputChannel = vscode.window.createOutputChannel(extensionDisplayName);
 
-const languageIdVerilog = 'verilog';
-const languageIdSystemVerilog = 'systemverilog';
-
-const diagnosticCollection = vscode.languages.createDiagnosticCollection(extensionDisplayName);
-const outputChannel = vscode.window.createOutputChannel('Crowned');
+let client: vscodeClient.LanguageClient;
 
 export function activate(context: vscode.ExtensionContext) {
-
     outputChannel.appendLine('Crowned extension activated.');
 
-    // context.subscriptions.push(vscode.languages.registerDocumentRangeFormattingEditProvider(
-    //     languageIdVhdl, { provideDocumentRangeFormattingEdits: VHDLFormatter.format }
-    // ));
+    const server: string = vscode.workspace.getConfiguration().get("crowned.serverCommand")!;
 
-    // context.subscriptions.push(vscode.languages.registerDocumentFormattingEditProvider(
-    //     languageIdVerilog, { provideDocumentFormattingEdits: verible.format }
-    // ));
+    const run: vscodeClient.Executable = {
+        command: server,
+    };
 
-    // context.subscriptions.push(vscode.languages.registerDocumentFormattingEditProvider(
-    //     languageIdSystemVerilog, { provideDocumentFormattingEdits: verible.format }
-    // ));
+    // If the extension is launched in debug mode then the debug server options are used
+    // Otherwise the run options are used
+    let serverOptions: vscodeClient.ServerOptions = {
+        run,
+        debug: run,
+    };
 
-    context.subscriptions.push(vscode.commands.registerCommand('crowned.clear_diagnostics', commandClearDiagnostics));
+    // Options to control the language client
+    let clientOptions: vscodeClient.LanguageClientOptions = {
+        // Register the server for plain text documents
+        documentSelector: [
+            {
+                scheme: "file", language: "systemverilog"
+            },
+            {
+                scheme: "file", language: "verilog"
+            }
+        ],
+    };
 
-    context.subscriptions.push(
-        vscode.workspace.onDidOpenTextDocument(didSaveTextDocument),
-        vscode.workspace.onDidSaveTextDocument(didSaveTextDocument),
-        vscode.workspace.onDidCloseTextDocument(didCloseTextDocument),
-        vscode.workspace.onDidRenameFiles(didRenameFiles),
+    // Create the language client and start the client.
+    client = new vscodeClient.LanguageClient(
+        extensionDisplayName,
+        extensionDisplayName,
+        serverOptions,
+        clientOptions
     );
-}
 
-function didSaveTextDocument(document: vscode.TextDocument) {
-    let promise: Promise<vscode.Diagnostic[]>;
-    switch (document.languageId) {
-        case languageIdVerilog:
-        case languageIdSystemVerilog:
-            promise = verible.lint(document, outputChannel);
-            promise
-                .then((diagnostics: vscode.Diagnostic[]) => {
-                    diagnosticCollection.delete(document.uri);
-                    diagnosticCollection.set(document.uri, diagnostics);
-                })
-                .catch((e) => {
-                    outputChannel.appendLine(e);
-                    vscode.window.showErrorMessage(e);
-                });
-            break;
-    }
-}
-
-function didCloseTextDocument(document: vscode.TextDocument) {
-    diagnosticCollection.delete(document.uri);
-}
-
-function didRenameFiles(e: vscode.FileRenameEvent) {
-    e.files.forEach(element => {
-        diagnosticCollection.delete(element.oldUri);
-    });
-}
-
-function commandClearDiagnostics() {
-    diagnosticCollection.clear();
+    // Start the client. This will also launch the server
+    client.start();
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() { }
+export function deactivate() { client.stop(); }
