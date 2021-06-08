@@ -8,6 +8,7 @@ import (
 	"go.uber.org/zap"
 	"log"
 	"os"
+	"os/signal"
 )
 
 const (
@@ -20,7 +21,7 @@ type Server struct {
 	Client protocol.Client
 }
 
-func (o *Server) Run(ctx context.Context, args []string) error {
+func (o *Server) Run(args []string) {
 	// ToDo: use server options
 	cfg := zap.NewDevelopmentConfig()
 	//cfg.OutputPaths = []string{
@@ -33,6 +34,25 @@ func (o *Server) Run(ctx context.Context, args []string) error {
 	}
 	defer o.loggerSync(logger)
 	logger.Info("Starting up...")
+
+	ctx := context.Background()
+	ctx, cancelFunc := context.WithCancel(ctx)
+	signalChan := make(chan os.Signal, 1)
+	signal.Notify(signalChan, os.Interrupt)
+	defer func() {
+		signal.Stop(signalChan)
+		cancelFunc()
+	}()
+
+	go func() {
+		select {
+		case <-signalChan: // first signal, cancel context
+			cancelFunc()
+		case <-ctx.Done():
+		}
+		<-signalChan // second signal, hard exit
+		os.Exit(ExitCodeInterrupt)
+	}()
 
 	stream := jsonrpc2.NewStream(Stdinout{})
 	ctx, conn, client := protocol.NewServer(ctx, o, stream, logger)
@@ -48,7 +68,6 @@ func (o *Server) Run(ctx context.Context, args []string) error {
 	}
 
 	logger.Info("Stopped...")
-	return nil
 }
 
 func (o *Server) loggerSync(logger *zap.Logger) {
