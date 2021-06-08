@@ -55,7 +55,7 @@ export function format(document: vscode.TextDocument, _options: vscode.Formattin
     }
 }
 
-export async function lint(document: vscode.TextDocument): Promise<vscode.Diagnostic[]> {
+export async function lint(document: vscode.TextDocument, outputChannel: vscode.OutputChannel): Promise<vscode.Diagnostic[]> {
     let cwd = workingDir(document);
     const config = vscode.workspace.getConfiguration();
     const lintCommand = config.get("crowned.lintCommand");
@@ -64,14 +64,15 @@ export async function lint(document: vscode.TextDocument): Promise<vscode.Diagno
     command.push(lintCommand);
     command.push('--lint_fatal=false');
     command.push('--parse_fatal=false');
-    command.push('--flagfile=' + configFile(cwd, 'lint.flags'));
-    command.push('--rules_config=' + configFile(cwd, 'lint.rules'));
-    command.push('--waiver_files=' + configFile(cwd, 'lint.waiver'));
+    // command.push('--flagfile=' + configFile(cwd, 'lint.flags'));
+    // command.push('--rules_config=' + configFile(cwd, 'lint.rules'));
+    // command.push('--waiver_files=' + configFile(cwd, 'lint.waiver'));
     command.push(filePath(cwd, document));
     let diagnostics: vscode.Diagnostic[] = [];
     try {
         const commandStr = command.join(' ').trim();
         logCommand(cwd, commandStr);
+        outputChannel.appendLine(cwd + '> ' + commandStr);
         const response = child.execSync(commandStr, {
             cwd: cwd,
         });

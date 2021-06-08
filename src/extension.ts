@@ -4,28 +4,28 @@ import * as verible from './verible';
 
 const extensionDisplayName = 'crowned';
 
-const languageIdVhdl = 'vhdl';
 const languageIdVerilog = 'verilog';
 const languageIdSystemVerilog = 'systemverilog';
 
-let diagnosticCollection: vscode.DiagnosticCollection;
+const diagnosticCollection = vscode.languages.createDiagnosticCollection(extensionDisplayName);
+const outputChannel = vscode.window.createOutputChannel('Crowned');
 
 export function activate(context: vscode.ExtensionContext) {
-    console.log('Crowned extension activated.');
+
+    outputChannel.appendLine('Crowned extension activated.');
 
     // context.subscriptions.push(vscode.languages.registerDocumentRangeFormattingEditProvider(
     //     languageIdVhdl, { provideDocumentRangeFormattingEdits: VHDLFormatter.format }
     // ));
 
-    context.subscriptions.push(vscode.languages.registerDocumentFormattingEditProvider(
-        languageIdVerilog, { provideDocumentFormattingEdits: verible.format }
-    ));
+    // context.subscriptions.push(vscode.languages.registerDocumentFormattingEditProvider(
+    //     languageIdVerilog, { provideDocumentFormattingEdits: verible.format }
+    // ));
 
-    context.subscriptions.push(vscode.languages.registerDocumentFormattingEditProvider(
-        languageIdSystemVerilog, { provideDocumentFormattingEdits: verible.format }
-    ));
+    // context.subscriptions.push(vscode.languages.registerDocumentFormattingEditProvider(
+    //     languageIdSystemVerilog, { provideDocumentFormattingEdits: verible.format }
+    // ));
 
-    diagnosticCollection = vscode.languages.createDiagnosticCollection(extensionDisplayName);
     context.subscriptions.push(vscode.commands.registerCommand('crowned.clear_diagnostics', commandClearDiagnostics));
 
     context.subscriptions.push(
@@ -41,14 +41,15 @@ function didSaveTextDocument(document: vscode.TextDocument) {
     switch (document.languageId) {
         case languageIdVerilog:
         case languageIdSystemVerilog:
-            promise = verible.lint(document);
+            promise = verible.lint(document, outputChannel);
             promise
                 .then((diagnostics: vscode.Diagnostic[]) => {
                     diagnosticCollection.delete(document.uri);
                     diagnosticCollection.set(document.uri, diagnostics);
                 })
                 .catch((e) => {
-                    console.error(e);
+                    outputChannel.appendLine(e);
+                    vscode.window.showErrorMessage(e);
                 });
             break;
     }

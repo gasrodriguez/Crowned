@@ -1,16 +1,16 @@
 {
-	"name": "crowned",
-	"displayName": "Crowned",
-	"description": "SystemVerilog Linter and Formatter with Verible",
-	"version": "0.0.1",
+    "name": "crowned",
+    "displayName": "Crowned",
+    "description": "SystemVerilog Linter and Formatter with Verible",
+    "version": "0.0.1",
     "publisher": "gasrodriguez",
     "author": {
         "name": "Gastón Rodriguez",
         "email": "gastonerodriguez@gmail.com"
     },
-	"engines": {
-		"vscode": "^1.55.0"
-	},
+    "engines": {
+        "vscode": "^1.55.0"
+    },
     "license": "MIT",
     "categories": [
         "Programming Languages",
@@ -28,19 +28,19 @@
         "type": "git",
         "url": "https://github.com/gasrodriguez/Crowned"
     },
-	"activationEvents": [
-		"onLanguage:systemverilog",
-		"onLanguage:verilog",
-		"onLanguage:vhdl"
-	],
-	"main": "./out/extension.js",
-	"contributes": {
-		"commands": [
+    "activationEvents": [
+        "onLanguage:systemverilog",
+        "onLanguage:verilog",
+        "onLanguage:vhdl"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "commands": [
             {
                 "command": "crowned.clear_diagnostics",
                 "title": "Crowned: clear all current diagnostics"
             }
-		],
+        ],
         "configuration": [
             {
                 "title": "Crowned",
@@ -58,26 +58,30 @@
                 }
             }
         ]
-	},
-	"scripts": {
-		"vscode:prepublish": "npm run compile",
-		"compile": "tsc -p ./",
-		"watch": "tsc -watch -p ./",
-		"pretest": "npm run compile && npm run lint",
-		"lint": "eslint src --ext ts",
-		"test": "node ./out/test/runTest.js"
-	},
-	"devDependencies": {
-		"@types/vscode": "^1.55.0",
-		"@types/glob": "^7.1.3",
-		"@types/mocha": "^8.0.4",
-		"@types/node": "^12.11.7",
-		"eslint": "^7.19.0",
-		"@typescript-eslint/eslint-plugin": "^4.14.1",
-		"@typescript-eslint/parser": "^4.14.1",
-		"glob": "^7.1.6",
-		"mocha": "^8.2.1",
-		"typescript": "^4.1.3",
-		"vscode-test": "^1.5.0"
-	}
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "pretest": "npm run compile && npm run lint",
+        "lint": "eslint src --ext ts",
+        "test": "node ./out/test/runTest.js"
+    },
+    "devDependencies": {
+        "@types/vscode": "^1.55.0",
+        "@types/glob": "^7.1.3",
+        "@types/mocha": "^8.0.4",
+        "@types/node": "^12.11.7",
+        "eslint": "^7.19.0",
+        "@typescript-eslint/eslint-plugin": "^4.14.1",
+        "@typescript-eslint/parser": "^4.14.1",
+        "glob": "^7.1.6",
+        "mocha": "^8.2.1",
+        "typescript": "^4.1.3",
+        "supports-color": "^9.0.1",
+        "vscode-test": "^1.5.0"
+    },
+    "dependencies": {
+        "supports-color": "^9.0.1"
+    }
 }
