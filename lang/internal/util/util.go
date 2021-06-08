@@ -42,3 +42,9 @@ func SplitLines(s []byte) (lines []string) {
 	}
 	return lines
 }
+
+func Exists(name string) bool {
+	// https://stackoverflow.com/a/22467409/12742920
+	_, err := os.Stat(name)
+	return !os.IsNotExist(err)
+}

@@ -153,142 +153,142 @@ import (
 //}
 //
 
-//func (s *Server) References(ctx context.Context, params *protocol.ReferenceParams) (result []protocol.Location, err error) {
+//func (s *SystemVerilog) References(ctx context.Context, params *protocol.ReferenceParams) (result []protocol.Location, err error) {
 //	err = notImplemented("References")
 //	return
 //}
 //
-//func (s *Server) Rename(ctx context.Context, params *protocol.RenameParams) (result *protocol.WorkspaceEdit, err error) {
+//func (s *SystemVerilog) Rename(ctx context.Context, params *protocol.RenameParams) (result *protocol.WorkspaceEdit, err error) {
 //	err = notImplemented("Rename")
 //	return
 //}
 //
-//func (s *Server) SignatureHelp(ctx context.Context, params *protocol.SignatureHelpParams) (result *protocol.SignatureHelp, err error) {
+//func (s *SystemVerilog) SignatureHelp(ctx context.Context, params *protocol.SignatureHelpParams) (result *protocol.SignatureHelp, err error) {
 //	err = notImplemented("SignatureHelp")
 //	return
 //}
 //
-//func (s *Server) Symbols(ctx context.Context, params *protocol.WorkspaceSymbolParams) (result []protocol.SymbolInformation, err error) {
+//func (s *SystemVerilog) Symbols(ctx context.Context, params *protocol.WorkspaceSymbolParams) (result []protocol.SymbolInformation, err error) {
 //	err = notImplemented("Symbols")
 //	return
 //}
 //
-//func (s *Server) TypeDefinition(ctx context.Context, params *protocol.TypeDefinitionParams) (result []protocol.Location, err error) {
+//func (s *SystemVerilog) TypeDefinition(ctx context.Context, params *protocol.TypeDefinitionParams) (result []protocol.Location, err error) {
 //	err = notImplemented("TypeDefinition")
 //	return
 //}
 //
-//func (s *Server) WillSave(ctx context.Context, params *protocol.WillSaveTextDocumentParams) (err error) {
+//func (s *SystemVerilog) WillSave(ctx context.Context, params *protocol.WillSaveTextDocumentParams) (err error) {
 //	err = notImplemented("WillSave")
 //	return
 //}
 //
-//func (s *Server) WillSaveWaitUntil(ctx context.Context, params *protocol.WillSaveTextDocumentParams) (result []protocol.TextEdit, err error) {
+//func (s *SystemVerilog) WillSaveWaitUntil(ctx context.Context, params *protocol.WillSaveTextDocumentParams) (result []protocol.TextEdit, err error) {
 //	err = notImplemented("WillSaveWaitUntil")
 //	return
 //}
 //
-//func (s *Server) WorkDoneProgressCancel(ctx context.Context, params *protocol.WorkDoneProgressCancelParams) (err error) {
+//func (s *SystemVerilog) WorkDoneProgressCancel(ctx context.Context, params *protocol.WorkDoneProgressCancelParams) (err error) {
 //	err = notImplemented("")
 //	return
 //}
 //
-//func (s *Server) LogTrace(ctx context.Context, params *protocol.LogTraceParams) (err error) {
+//func (s *SystemVerilog) LogTrace(ctx context.Context, params *protocol.LogTraceParams) (err error) {
 //	err = notImplemented("")
 //	return
 //}
 //
-//func (s *Server) SetTrace(ctx context.Context, params *protocol.SetTraceParams) (err error) {
+//func (s *SystemVerilog) SetTrace(ctx context.Context, params *protocol.SetTraceParams) (err error) {
 //	err = notImplemented("")
 //	return
 //}
 //
-//func (s *Server) ShowDocument(ctx context.Context, params *protocol.ShowDocumentParams) (result *protocol.ShowDocumentResult, err error) {
+//func (s *SystemVerilog) ShowDocument(ctx context.Context, params *protocol.ShowDocumentParams) (result *protocol.ShowDocumentResult, err error) {
 //	err = notImplemented("")
 //	return
 //}
 //
-//func (s *Server) WillCreateFiles(ctx context.Context, params *protocol.CreateFilesParams) (result *protocol.WorkspaceEdit, err error) {
+//func (s *SystemVerilog) WillCreateFiles(ctx context.Context, params *protocol.CreateFilesParams) (result *protocol.WorkspaceEdit, err error) {
 //	err = notImplemented("")
 //	return
 //}
 //
-//func (s *Server) DidCreateFiles(ctx context.Context, params *protocol.CreateFilesParams) (err error) {
+//func (s *SystemVerilog) DidCreateFiles(ctx context.Context, params *protocol.CreateFilesParams) (err error) {
 //	err = notImplemented("")
 //	return
 //}
 //
-//func (s *Server) WillRenameFiles(ctx context.Context, params *protocol.RenameFilesParams) (result *protocol.WorkspaceEdit, err error) {
+//func (s *SystemVerilog) WillRenameFiles(ctx context.Context, params *protocol.RenameFilesParams) (result *protocol.WorkspaceEdit, err error) {
 //	err = notImplemented("")
 //	return
 //}
 //
-//func (s *Server) DidRenameFiles(ctx context.Context, params *protocol.RenameFilesParams) (err error) {
+//func (s *SystemVerilog) DidRenameFiles(ctx context.Context, params *protocol.RenameFilesParams) (err error) {
 //	err = notImplemented("")
 //	return
 //}
 //
-//func (s *Server) WillDeleteFiles(ctx context.Context, params *protocol.DeleteFilesParams) (result *protocol.WorkspaceEdit, err error) {
+//func (s *SystemVerilog) WillDeleteFiles(ctx context.Context, params *protocol.DeleteFilesParams) (result *protocol.WorkspaceEdit, err error) {
 //	err = notImplemented("")
 //	return
 //}
 //
-//func (s *Server) DidDeleteFiles(ctx context.Context, params *protocol.DeleteFilesParams) (err error) {
+//func (s *SystemVerilog) DidDeleteFiles(ctx context.Context, params *protocol.DeleteFilesParams) (err error) {
 //	err = notImplemented("")
 //	return
 //}
 //
-//func (s *Server) CodeLensRefresh(ctx context.Context) (err error) {
+//func (s *SystemVerilog) CodeLensRefresh(ctx context.Context) (err error) {
 //	err = notImplemented("")
 //	return
 //}
 //
-//func (s *Server) PrepareCallHierarchy(ctx context.Context, params *protocol.CallHierarchyPrepareParams) (result []protocol.CallHierarchyItem, err error) {
+//func (s *SystemVerilog) PrepareCallHierarchy(ctx context.Context, params *protocol.CallHierarchyPrepareParams) (result []protocol.CallHierarchyItem, err error) {
 //	err = notImplemented("")
 //	return
 //}
 //
-//func (s *Server) IncomingCalls(ctx context.Context, params *protocol.CallHierarchyIncomingCallsParams) (result []protocol.CallHierarchyIncomingCall, err error) {
+//func (s *SystemVerilog) IncomingCalls(ctx context.Context, params *protocol.CallHierarchyIncomingCallsParams) (result []protocol.CallHierarchyIncomingCall, err error) {
 //	err = notImplemented("")
 //	return
 //}
 //
-//func (s *Server) OutgoingCalls(ctx context.Context, params *protocol.CallHierarchyOutgoingCallsParams) (result []protocol.CallHierarchyOutgoingCall, err error) {
+//func (s *SystemVerilog) OutgoingCalls(ctx context.Context, params *protocol.CallHierarchyOutgoingCallsParams) (result []protocol.CallHierarchyOutgoingCall, err error) {
 //	err = notImplemented("")
 //	return
 //}
 //
-//func (s *Server) SemanticTokensFull(ctx context.Context, params *protocol.SemanticTokensParams) (result *protocol.SemanticTokens, err error) {
+//func (s *SystemVerilog) SemanticTokensFull(ctx context.Context, params *protocol.SemanticTokensParams) (result *protocol.SemanticTokens, err error) {
 //	err = notImplemented("")
 //	return
 //}
 //
-//func (s *Server) SemanticTokensFullDelta(ctx context.Context, params *protocol.SemanticTokensDeltaParams) (result interface{}, err error) {
+//func (s *SystemVerilog) SemanticTokensFullDelta(ctx context.Context, params *protocol.SemanticTokensDeltaParams) (result interface{}, err error) {
 //	err = notImplemented("")
 //	return
 //}
 //
-//func (s *Server) SemanticTokensRange(ctx context.Context, params *protocol.SemanticTokensRangeParams) (result *protocol.SemanticTokens, err error) {
+//func (s *SystemVerilog) SemanticTokensRange(ctx context.Context, params *protocol.SemanticTokensRangeParams) (result *protocol.SemanticTokens, err error) {
 //	err = notImplemented("")
 //	return
 //}
 //
-//func (s *Server) SemanticTokensRefresh(ctx context.Context) (err error) {
+//func (s *SystemVerilog) SemanticTokensRefresh(ctx context.Context) (err error) {
 //	err = notImplemented("")
 //	return
 //}
 //
-//func (s *Server) LinkedEditingRange(ctx context.Context, params *protocol.LinkedEditingRangeParams) (result *protocol.LinkedEditingRanges, err error) {
+//func (s *SystemVerilog) LinkedEditingRange(ctx context.Context, params *protocol.LinkedEditingRangeParams) (result *protocol.LinkedEditingRanges, err error) {
 //	err = notImplemented("")
 //	return
 //}
 //
-//func (s *Server) Moniker(ctx context.Context, params *protocol.MonikerParams) (result []protocol.Moniker, err error) {
+//func (s *SystemVerilog) Moniker(ctx context.Context, params *protocol.MonikerParams) (result []protocol.Moniker, err error) {
 //	err = notImplemented("")
 //	return
 //}
 //
-//func (s *Server) Request(ctx context.Context, method string, params interface{}) (result interface{}, err error) {
+//func (s *SystemVerilog) Request(ctx context.Context, method string, params interface{}) (result interface{}, err error) {
 //	err = notImplemented("")
 //	return
 //}

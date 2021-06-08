@@ -7,5 +7,5 @@ import (
 
 func main() {
 	svServer := systemverilog.NewServer()
-	svServer.Run(os.Args)
+	svServer.Run(svServer, os.Args)
 }

@@ -1,4 +1,4 @@
-package server
+package handler
 
 import (
 	"context"
@@ -16,12 +16,12 @@ const (
 	ExitCodeInterrupt = 2
 )
 
-type Server struct {
+type Handler struct {
 	protocol.Server
 	Client protocol.Client
 }
 
-func (o *Server) Run(args []string) {
+func (o *Handler) Run(server protocol.Server, args []string) {
 	// ToDo: use server options
 	cfg := zap.NewDevelopmentConfig()
 	//cfg.OutputPaths = []string{
@@ -32,7 +32,7 @@ func (o *Server) Run(args []string) {
 		log.Printf("failed to create logger: %v\n", err)
 		os.Exit(ExitCodeErr)
 	}
-	defer o.loggerSync(logger)
+	defer loggerSync(logger)
 	logger.Info("Starting up...")
 
 	ctx := context.Background()
@@ -54,8 +54,8 @@ func (o *Server) Run(args []string) {
 		os.Exit(ExitCodeInterrupt)
 	}()
 
-	stream := jsonrpc2.NewStream(Stdinout{})
-	ctx, conn, client := protocol.NewServer(ctx, o, stream, logger)
+	stream := jsonrpc2.NewStream(util.Stdinout{})
+	ctx, conn, client := protocol.NewServer(ctx, server, stream, logger)
 	o.Client = client
 
 	select {
@@ -70,23 +70,7 @@ func (o *Server) Run(args []string) {
 	logger.Info("Stopped...")
 }
 
-func (o *Server) loggerSync(logger *zap.Logger) {
+func loggerSync(logger *zap.Logger) {
 	err := logger.Sync()
-	util.CheckError(err)
-}
-
-func (o *Server) LogMessage(message string) {
-	err := o.Client.LogMessage(context.TODO(), &protocol.LogMessageParams{
-		Message: message,
-		Type:    protocol.MessageTypeLog,
-	})
-	util.CheckError(err)
-}
-
-func (o *Server) LogError(message string) {
-	err := o.Client.LogMessage(context.TODO(), &protocol.LogMessageParams{
-		Message: message,
-		Type:    protocol.MessageTypeError,
-	})
 	util.CheckError(err)
 }
