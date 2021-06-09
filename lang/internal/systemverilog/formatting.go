@@ -2,6 +2,7 @@ package systemverilog
 
 import (
 	"context"
+	"fmt"
 	"github.com/gasrodriguez/crowned/internal/util"
 	"github.com/gasrodriguez/crowned/internal/verible"
 	"go.lsp.dev/protocol"
@@ -9,6 +10,7 @@ import (
 )
 
 func (o *Handler) Formatting(ctx context.Context, params *protocol.DocumentFormattingParams) (result []protocol.TextEdit, err error) {
+	o.LogMessage("received formatting req")
 	filename := params.TextDocument.URI.Filename()
 	endLine, err := util.LineCounter(filename)
 	if err != nil {
@@ -20,6 +22,11 @@ func (o *Handler) Formatting(ctx context.Context, params *protocol.DocumentForma
 	}
 	newText, cmd, err := verible.Format(o.workspacePath, filename, config.Verible.Format.Arguments)
 	o.LogMessage(cmd)
+	if err != nil {
+		o.LogError(fmt.Sprintf("Failed to format file '%s', error '%s'", filename, err.Error()))
+		return nil, err
+	}
+
 	result = []protocol.TextEdit{
 		{
 			Range: protocol.Range{

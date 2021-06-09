@@ -19,12 +19,12 @@ func (o *Handler) DidOpen(ctx context.Context, params *protocol.DidOpenTextDocum
 // DidSave implements textDocument/didSave method.
 // https://microsoft.github.io/language-server-protocol/specification#textDocument_didSave
 func (o *Handler) DidSave(ctx context.Context, params *protocol.DidSaveTextDocumentParams) (err error) {
-	go o.publishDiagnostics(ctx, params.TextDocument.URI)
+	go o.publishDiagnostics(context.TODO(), params.TextDocument.URI)
 	return nil
 }
 
 func (o *Handler) publishDiagnostics(ctx context.Context, uri protocol.DocumentURI) {
-	var diagnostics []protocol.Diagnostic
+	diagnostics := make([]protocol.Diagnostic, 0)
 	config := o.loadConfig()
 
 	if config.Slang.Enabled {
@@ -48,7 +48,7 @@ func (o *Handler) publishDiagnostics(ctx context.Context, uri protocol.DocumentU
 	}
 
 	if config.Svlint.Enabled {
-		diagnosticsSvlint, cmd, err := svlint.Lint(o.workspacePath, uri.Filename(), config.Svlint.Arguments)
+		diagnosticsSvlint, cmd, err := svlint.Lint(o.workspacePath, uri.Filename(), config.General.Includes, config.Svlint.Arguments)
 		o.LogMessage(cmd)
 		if err != nil {
 			o.LogError(fmt.Sprintf("Failed to lint file '%s', error '%s'", uri.Filename(), err.Error()))
@@ -57,15 +57,12 @@ func (o *Handler) publishDiagnostics(ctx context.Context, uri protocol.DocumentU
 		}
 	}
 
-	if diagnostics == nil {
-		return
-	}
-
 	err := o.Client.PublishDiagnostics(ctx, &protocol.PublishDiagnosticsParams{
 		URI:         uri,
 		Version:     0,
 		Diagnostics: diagnostics,
 	})
+	o.LogError(fmt.Sprintf("Failed to format file '%v'", diagnostics))
 
 	if err != nil {
 		o.LogError(fmt.Sprintf("Failed to publish diagnostics for file '%s', error '%e'", uri.Filename(), err))

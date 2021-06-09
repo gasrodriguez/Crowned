@@ -13,21 +13,25 @@ import (
 const (
 	lintCmd = "svlint"
 
+	errorPrefix  = "Error: "
 	failPrefix   = "Fail: "
 	hintPrefix   = "hint  : "
 	reasonPrefix = "reason: "
 )
 
-func Lint(cwd, filename string, args []string) (diagnostics []protocol.Diagnostic, cmdText string, err error) {
+func Lint(cwd, filename string, includes []string, args []string) (diagnostics []protocol.Diagnostic, cmdText string, err error) {
 	relPath, err := filepath.Rel(cwd, filename)
 	if err != nil {
 		relPath = filename
+	}
+	for _, include := range includes {
+		args = append(args, "--include="+include)
 	}
 	args = append(args, relPath)
 	cmd := exec.Command(lintCmd, args...)
 	cmd.Dir = cwd
 	cmdText = cmd.String()
-	data, _ := cmd.CombinedOutput()
+	data, err := cmd.CombinedOutput()
 	lines := util.SplitLines(util.Decolorize(data))
 	diagnostics = make([]protocol.Diagnostic, 0)
 
@@ -36,17 +40,26 @@ func Lint(cwd, filename string, args []string) (diagnostics []protocol.Diagnosti
 	lineNum := 1
 	colNum := 1
 	message := ""
+	severity := protocol.DiagnosticSeverityHint
+
 	for _, line := range lines {
 		switch index {
 		case 0:
-			if strings.HasPrefix(line, failPrefix) {
+			lineNum = 1
+			colNum = 1
+			message = ""
+			if strings.HasPrefix(line, errorPrefix) {
+				code = strings.TrimPrefix(line, errorPrefix)
+				message = code
+				severity = protocol.DiagnosticSeverityError
 				index = 1
+			} else if strings.HasPrefix(line, failPrefix) {
 				code = strings.TrimPrefix(line, failPrefix)
-				lineNum = 1
-				colNum = 1
-				message = ""
+				severity = protocol.DiagnosticSeverityHint
+				index = 1
 			}
 			continue
+
 		case 1:
 			terms := strings.Split(line, ":")
 			if len(terms) < 3 {
@@ -60,12 +73,19 @@ func Lint(cwd, filename string, args []string) (diagnostics []protocol.Diagnosti
 			if err != nil {
 				continue
 			}
-			index++
-			continue
+			if severity == protocol.DiagnosticSeverityError {
+				index = 0
+				break
+			} else {
+				index++
+				continue
+			}
+
 		case 4:
 			message = hintPrefix + util.StringListLast(strings.Split(line, hintPrefix)) + "\n"
 			index++
 			continue
+
 		case 5:
 			message += reasonPrefix + util.StringListLast(strings.Split(line, reasonPrefix)) + "\n"
 			index = 0
@@ -75,8 +95,6 @@ func Lint(cwd, filename string, args []string) (diagnostics []protocol.Diagnosti
 			index++
 			continue
 		}
-
-		severity := protocol.DiagnosticSeverityHint
 
 		diagnostics = append(diagnostics, protocol.Diagnostic{
 			Range: protocol.Range{

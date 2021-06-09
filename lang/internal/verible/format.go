@@ -16,6 +16,6 @@ func Format(cwd, filename string, args []string) (output string, cmdText string,
 	cmd := exec.Command(formatCmd, args...)
 	cmd.Dir = cwd
 	cmdText = cmd.String()
-	data, _ := cmd.CombinedOutput()
+	data, err := cmd.Output()
 	return string(data), cmdText, err
 }

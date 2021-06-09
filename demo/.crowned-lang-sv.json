@@ -1,6 +1,6 @@
 {
   "general": {
-    "includes": [],
+    "includes": ["tb_build/rtl/spi/rtl/verilog"],
     "defines": []
   },
   "slang": {
@@ -8,7 +8,7 @@
     "arguments": []
   },
   "svlint": {
-    "enabled": false,
+    "enabled": true,
     "arguments": []
   },
   "verible": {
