@@ -1,4 +1,4 @@
-package verible
+package slang
 
 import (
 	"github.com/gasrodriguez/crowned/internal/util"
@@ -10,19 +10,16 @@ import (
 	"strings"
 )
 
-const lintCmd = "verible-verilog-lint"
+const slangCmd = "slang"
 
 func Lint(filename string) (diagnostics []protocol.Diagnostic, cmdText string, err error) {
 	dir := filepath.Dir(filename)
 	base := filepath.Base(filename)
-	cmd := exec.Command(lintCmd, "--lint_fatal=false", "--parse_fatal=false", base)
+	cmd := exec.Command(slangCmd, "--lint-only", "--quiet", "--color-diagnostics=false", base)
 	cmd.Dir = dir
 	cmdText = cmd.String()
-	bytes, err := cmd.Output()
-	if err != nil {
-		return
-	}
-	lines := util.SplitLines(bytes)
+	data, _ := cmd.CombinedOutput()
+	lines := util.SplitLines(util.DecodeUTF16(data))
 	diagnostics = make([]protocol.Diagnostic, 0)
 	for _, line := range lines {
 		terms := strings.Split(line, ":")
@@ -41,6 +38,8 @@ func Lint(filename string) (diagnostics []protocol.Diagnostic, cmdText string, e
 		severity := protocol.DiagnosticSeverityWarning
 		if strings.Contains(message, "error") {
 			severity = protocol.DiagnosticSeverityError
+		} else if strings.Contains(message, "note") {
+			severity = protocol.DiagnosticSeverityInformation
 		}
 
 		diagnostics = append(diagnostics, protocol.Diagnostic{
@@ -57,7 +56,7 @@ func Lint(filename string) (diagnostics []protocol.Diagnostic, cmdText string, e
 			Severity:           severity,
 			Code:               nil,
 			CodeDescription:    nil,
-			Source:             lintCmd,
+			Source:             slangCmd,
 			Message:            message,
 			Tags:               nil,
 			RelatedInformation: nil,
