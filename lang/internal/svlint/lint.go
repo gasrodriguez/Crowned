@@ -1,4 +1,4 @@
-package slang
+package svlint
 
 import (
 	"github.com/gasrodriguez/crowned/internal/util"
@@ -10,16 +10,16 @@ import (
 	"strings"
 )
 
-const lintCmd = "slang"
+const lintCmd = "svlint"
 
 func Lint(filename string) (diagnostics []protocol.Diagnostic, cmdText string, err error) {
 	dir := filepath.Dir(filename)
 	base := filepath.Base(filename)
-	cmd := exec.Command(lintCmd, "--lint-only", "--quiet", "--color-diagnostics=false", base)
+	cmd := exec.Command(lintCmd, "-1", base)
 	cmd.Dir = dir
 	cmdText = cmd.String()
 	data, _ := cmd.CombinedOutput()
-	lines := util.SplitLines(util.DecodeUTF16(data))
+	lines := util.SplitLines(data)
 	diagnostics = make([]protocol.Diagnostic, 0)
 	for _, line := range lines {
 		terms := strings.Split(line, ":")
@@ -30,17 +30,15 @@ func Lint(filename string) (diagnostics []protocol.Diagnostic, cmdText string, e
 		if err != nil {
 			continue
 		}
+		terms[2] = strings.Split(terms[2], "\u001B[37m")[0]
 		colNum, err := strconv.Atoi(terms[2])
 		if err != nil {
 			continue
 		}
-		message := strings.Join(terms[3:], ":")
-		severity := protocol.DiagnosticSeverityWarning
-		if strings.Contains(message, "error") {
-			severity = protocol.DiagnosticSeverityError
-		} else if strings.Contains(message, "note") {
-			severity = protocol.DiagnosticSeverityInformation
-		}
+		message := terms[len(terms)-1]
+		message = strings.Replace(message, "\u001B[0m", "", 1)
+		message = strings.TrimSpace(message)
+		severity := protocol.DiagnosticSeverityHint
 
 		diagnostics = append(diagnostics, protocol.Diagnostic{
 			Range: protocol.Range{

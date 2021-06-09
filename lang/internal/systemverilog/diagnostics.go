@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/gasrodriguez/crowned/internal/slang"
+	"github.com/gasrodriguez/crowned/internal/svlint"
 	"github.com/gasrodriguez/crowned/internal/verible"
 	"go.lsp.dev/protocol"
 )
@@ -35,10 +36,16 @@ func (o *Handler) publishDiagnostics(ctx context.Context, uri protocol.DocumentU
 	}
 	o.LogMessage(cmd)
 
+	diagnosticsSvlint, cmd, err := svlint.Lint(uri.Filename())
+	if err != nil {
+		o.LogError(fmt.Sprintf("Failed to lint file '%s', error '%s'", uri.Filename(), err.Error()))
+	}
+	o.LogMessage(cmd)
+
 	err = o.Client.PublishDiagnostics(ctx, &protocol.PublishDiagnosticsParams{
 		URI:         uri,
 		Version:     0,
-		Diagnostics: append(diagnosticsVerible, diagnosticsSlang...),
+		Diagnostics: append(append(diagnosticsVerible, diagnosticsSlang...), diagnosticsSvlint...),
 	})
 
 	if err != nil {
