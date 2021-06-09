@@ -6,6 +6,6 @@ import (
 )
 
 func main() {
-	svServer := systemverilog.NewServer()
-	svServer.Run(svServer, os.Args)
+	svHandler := systemverilog.NewHandler()
+	svHandler.Run(svHandler, os.Args)
 }

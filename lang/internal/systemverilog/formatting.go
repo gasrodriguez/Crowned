@@ -8,7 +8,7 @@ import (
 	"math"
 )
 
-func (o *SystemVerilog) Formatting(ctx context.Context, params *protocol.DocumentFormattingParams) (result []protocol.TextEdit, err error) {
+func (o *Handler) Formatting(ctx context.Context, params *protocol.DocumentFormattingParams) (result []protocol.TextEdit, err error) {
 	endLine, err := util.LineCounter(params.TextDocument.URI.Filename())
 	if err != nil {
 		return

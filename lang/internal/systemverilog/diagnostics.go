@@ -9,19 +9,19 @@ import (
 
 // DidOpen implements textDocument/didOpen method.
 // https://microsoft.github.io/language-server-protocol/specification#textDocument_didOpen
-func (o *SystemVerilog) DidOpen(ctx context.Context, params *protocol.DidOpenTextDocumentParams) (err error) {
+func (o *Handler) DidOpen(ctx context.Context, params *protocol.DidOpenTextDocumentParams) (err error) {
 	go o.publishDiagnostics(params.TextDocument.URI)
 	return nil
 }
 
 // DidSave implements textDocument/didSave method.
 // https://microsoft.github.io/language-server-protocol/specification#textDocument_didSave
-func (o *SystemVerilog) DidSave(ctx context.Context, params *protocol.DidSaveTextDocumentParams) (err error) {
+func (o *Handler) DidSave(ctx context.Context, params *protocol.DidSaveTextDocumentParams) (err error) {
 	go o.publishDiagnostics(params.TextDocument.URI)
 	return nil
 }
 
-func (o *SystemVerilog) publishDiagnostics(uri protocol.DocumentURI) {
+func (o *Handler) publishDiagnostics(uri protocol.DocumentURI) {
 	diagnostics, cmd, err := verible.Lint(uri.Filename())
 	if err != nil {
 		o.LogError(fmt.Sprintf("Failed to lint file '%s', error '%e'", uri.Filename(), err))

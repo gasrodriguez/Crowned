@@ -10,7 +10,7 @@ import (
 
 // Initialize implements initialize method.
 // https://microsoft.github.io/language-server-protocol/specification#initialize
-func (o *SystemVerilog) Initialize(ctx context.Context, params *protocol.InitializeParams) (result *protocol.InitializeResult, err error) {
+func (o *Handler) Initialize(ctx context.Context, params *protocol.InitializeParams) (result *protocol.InitializeResult, err error) {
 	return &protocol.InitializeResult{
 		Capabilities: protocol.ServerCapabilities{
 			TextDocumentSync: protocol.TextDocumentSyncOptions{
@@ -60,7 +60,7 @@ func (o *SystemVerilog) Initialize(ctx context.Context, params *protocol.Initial
 
 // Initialized implements initialized method.
 // https://microsoft.github.io/language-server-protocol/specification#initialized
-func (o *SystemVerilog) Initialized(ctx context.Context, params *protocol.InitializedParams) (err error) {
+func (o *Handler) Initialized(ctx context.Context, params *protocol.InitializedParams) (err error) {
 	o.ShowInfo(fmt.Sprintf("%s started.", ServerName))
 	workspaceFolders, err := o.Client.WorkspaceFolders(ctx)
 	if err != nil {
@@ -88,14 +88,14 @@ func (o *SystemVerilog) Initialized(ctx context.Context, params *protocol.Initia
 
 // Shutdown implements shutdown method.
 // https://microsoft.github.io/language-server-protocol/specification#shutdown
-func (o *SystemVerilog) Shutdown(ctx context.Context) (err error) {
+func (o *Handler) Shutdown(ctx context.Context) (err error) {
 	o.ShowInfo(fmt.Sprintf("%s shutdown.", ServerName))
 	return nil
 }
 
 // Exit implements exit method.
 // https://microsoft.github.io/language-server-protocol/specification#exit
-func (o *SystemVerilog) Exit(ctx context.Context) (err error) {
+func (o *Handler) Exit(ctx context.Context) (err error) {
 	o.ShowInfo(fmt.Sprintf("%s exited.", ServerName))
 	return nil
 }

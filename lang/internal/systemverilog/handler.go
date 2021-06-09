@@ -1,7 +1,7 @@
 package systemverilog
 
 import (
-	"github.com/gasrodriguez/crowned/pkg/handler"
+	"github.com/gasrodriguez/crowned/pkg/lsp"
 )
 
 const (
@@ -10,10 +10,10 @@ const (
 	ConfigFilename = "crowned.toml"
 )
 
-type SystemVerilog struct {
-	handler.Handler
+type Handler struct {
+	lsp.Handler
 }
 
-func NewServer() *SystemVerilog {
-	return &SystemVerilog{}
+func NewHandler() *Handler {
+	return &Handler{}
 }
