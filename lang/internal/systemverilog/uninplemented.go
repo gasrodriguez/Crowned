@@ -77,30 +77,6 @@ import (
 //	//return s.changeWorkspace(ctx, params.Event)
 //}
 //
-//// DidClose implements textDocument/didClose method.
-//// https://microsoft.github.io/language-server-protocol/specification#textDocument_didClose
-//func (s *Server) DidClose(ctx context.Context, params *protocol.DidCloseTextDocumentParams) (err error) {
-//	err = notImplemented("")
-//	return
-//	//return s.didClose(ctx, params)
-//}
-//
-//// DidOpen implements textDocument/didOpen method.
-//// https://microsoft.github.io/language-server-protocol/specification#textDocument_didOpen
-//func (s *Server) DidOpen(ctx context.Context, params *protocol.DidOpenTextDocumentParams) (err error) {
-//	err = notImplemented("")
-//	return
-//	//return s.didOpen(ctx, params)
-//}
-//
-//// DidSave implements textDocument/didSave method.
-//// https://microsoft.github.io/language-server-protocol/specification#textDocument_didSave
-//func (s *Server) DidSave(ctx context.Context, params *protocol.DidSaveTextDocumentParams) (err error) {
-//	err = notImplemented("")
-//	return
-//	//return s.didSave(ctx, params)
-//}
-//
 //func (s *Server) DocumentColor(ctx context.Context, params *protocol.DocumentColorParams) (result []protocol.ColorInformation, err error) {
 //	err = notImplemented("DocumentColor")
 //	return

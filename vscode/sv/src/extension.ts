@@ -1,15 +1,11 @@
 import * as vscode from 'vscode';
 import * as vscodeClient from 'vscode-languageclient';
 
-const extensionDisplayName = 'crowned';
-const langServerCommand = 'crowned-lang-sv';
-const outputChannel = vscode.window.createOutputChannel(extensionDisplayName);
+const extensionDisplayName = 'Crowned';
 
 let client: vscodeClient.LanguageClient;
 
 export function activate(context: vscode.ExtensionContext) {
-    outputChannel.appendLine('Crowned extension activated.');
-
     const server: string = vscode.workspace.getConfiguration().get("crowned.serverCommand")!;
 
     const run: vscodeClient.Executable = {

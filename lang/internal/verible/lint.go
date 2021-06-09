@@ -12,11 +12,19 @@ import (
 
 const lintCmd = "verible-verilog-lint"
 
-func Lint(filename string) (diagnostics []protocol.Diagnostic, cmdText string, err error) {
-	dir := filepath.Dir(filename)
-	base := filepath.Base(filename)
-	cmd := exec.Command(lintCmd, "--lint_fatal=false", "--parse_fatal=false", base)
-	cmd.Dir = dir
+func Lint(cwd, filename string, args []string, rules []string) (diagnostics []protocol.Diagnostic, cmdText string, err error) {
+	relPath, err := filepath.Rel(cwd, filename)
+	if err != nil {
+		relPath = filename
+	}
+	args = append(args, "--lint_fatal=false")
+	args = append(args, "--parse_fatal=false")
+	if rules != nil && len(rules) > 0 {
+		args = append(args, "--rules="+strings.Join(rules, ","))
+	}
+	args = append(args, relPath)
+	cmd := exec.Command(lintCmd, args...)
+	cmd.Dir = cwd
 	cmdText = cmd.String()
 	bytes, err := cmd.Output()
 	if err != nil {

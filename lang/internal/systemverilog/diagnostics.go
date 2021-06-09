@@ -24,31 +24,66 @@ func (o *Handler) DidSave(ctx context.Context, params *protocol.DidSaveTextDocum
 }
 
 func (o *Handler) publishDiagnostics(ctx context.Context, uri protocol.DocumentURI) {
-	diagnosticsVerible, cmd, err := verible.Lint(uri.Filename())
-	if err != nil {
-		o.LogError(fmt.Sprintf("Failed to lint file '%s', error '%s'", uri.Filename(), err.Error()))
-	}
-	o.LogMessage(cmd)
+	var diagnostics []protocol.Diagnostic
+	config := o.loadConfig()
 
-	diagnosticsSlang, cmd, err := slang.Lint(uri.Filename())
-	if err != nil {
-		o.LogError(fmt.Sprintf("Failed to lint file '%s', error '%s'", uri.Filename(), err.Error()))
+	if config.Slang.Enabled {
+		diagnosticsSlang, cmd, err := slang.Lint(o.workspacePath, uri.Filename(), config.Slang.Arguments)
+		o.LogMessage(cmd)
+		if err != nil {
+			o.LogError(fmt.Sprintf("Failed to lint file '%s', error '%s'", uri.Filename(), err.Error()))
+		} else {
+			diagnostics = append(diagnostics, diagnosticsSlang...)
+		}
 	}
-	o.LogMessage(cmd)
 
-	diagnosticsSvlint, cmd, err := svlint.Lint(uri.Filename())
-	if err != nil {
-		o.LogError(fmt.Sprintf("Failed to lint file '%s', error '%s'", uri.Filename(), err.Error()))
+	if config.Verible.Lint.Enabled {
+		diagnosticsVerible, cmd, err := verible.Lint(o.workspacePath, uri.Filename(), config.Verible.Lint.Arguments, config.Verible.Lint.Rules)
+		o.LogMessage(cmd)
+		if err != nil {
+			o.LogError(fmt.Sprintf("Failed to lint file '%s', error '%s'", uri.Filename(), err.Error()))
+		} else {
+			diagnostics = append(diagnostics, diagnosticsVerible...)
+		}
 	}
-	o.LogMessage(cmd)
 
-	err = o.Client.PublishDiagnostics(ctx, &protocol.PublishDiagnosticsParams{
+	if config.Svlint.Enabled {
+		diagnosticsSvlint, cmd, err := svlint.Lint(o.workspacePath, uri.Filename(), config.Svlint.Arguments)
+		o.LogMessage(cmd)
+		if err != nil {
+			o.LogError(fmt.Sprintf("Failed to lint file '%s', error '%s'", uri.Filename(), err.Error()))
+		} else {
+			diagnostics = append(diagnostics, diagnosticsSvlint...)
+		}
+	}
+
+	if diagnostics == nil {
+		return
+	}
+
+	err := o.Client.PublishDiagnostics(ctx, &protocol.PublishDiagnosticsParams{
 		URI:         uri,
 		Version:     0,
-		Diagnostics: append(append(diagnosticsVerible, diagnosticsSlang...), diagnosticsSvlint...),
+		Diagnostics: diagnostics,
 	})
 
 	if err != nil {
 		o.LogError(fmt.Sprintf("Failed to publish diagnostics for file '%s', error '%e'", uri.Filename(), err))
 	}
+}
+
+// DidClose implements textDocument/didClose method.
+// https://microsoft.github.io/language-server-protocol/specification#textDocument_didClose
+func (o *Handler) DidClose(ctx context.Context, params *protocol.DidCloseTextDocumentParams) (err error) {
+	uri := params.TextDocument.URI
+	err = o.Client.PublishDiagnostics(ctx, &protocol.PublishDiagnosticsParams{
+		URI:         uri,
+		Version:     0,
+		Diagnostics: []protocol.Diagnostic{},
+	})
+
+	if err != nil {
+		o.LogError(fmt.Sprintf("Failed to clear diagnostics for file '%s', error '%e'", uri.Filename(), err))
+	}
+	return
 }

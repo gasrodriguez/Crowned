@@ -18,11 +18,14 @@ const (
 	reasonPrefix = "reason: "
 )
 
-func Lint(filename string) (diagnostics []protocol.Diagnostic, cmdText string, err error) {
-	dir := filepath.Dir(filename)
-	base := filepath.Base(filename)
-	cmd := exec.Command(lintCmd, base)
-	cmd.Dir = dir
+func Lint(cwd, filename string, args []string) (diagnostics []protocol.Diagnostic, cmdText string, err error) {
+	relPath, err := filepath.Rel(cwd, filename)
+	if err != nil {
+		relPath = filename
+	}
+	args = append(args, relPath)
+	cmd := exec.Command(lintCmd, args...)
+	cmd.Dir = cwd
 	cmdText = cmd.String()
 	data, _ := cmd.CombinedOutput()
 	lines := util.SplitLines(util.Decolorize(data))

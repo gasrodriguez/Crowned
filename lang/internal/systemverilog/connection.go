@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/gasrodriguez/crowned/internal/util"
 	"go.lsp.dev/protocol"
-	"path"
+	"path/filepath"
 )
 
 // Initialize implements initialize method.
@@ -61,26 +61,26 @@ func (o *Handler) Initialize(ctx context.Context, params *protocol.InitializePar
 // Initialized implements initialized method.
 // https://microsoft.github.io/language-server-protocol/specification#initialized
 func (o *Handler) Initialized(ctx context.Context, params *protocol.InitializedParams) (err error) {
-	o.ShowInfo(fmt.Sprintf("%s started.", ServerName))
+	o.workspacePath = "."
 	workspaceFolders, err := o.Client.WorkspaceFolders(ctx)
 	if err != nil {
 		return err
 	}
 	if workspaceFolders == nil || len(workspaceFolders) == 0 {
-		o.ShowWarning("No workspace folder found. Starting in single-file mode.")
+		o.ShowWarning("No workspace folder found. Using default settings.")
 	} else {
-		var configFile *string
+		configFound := false
 		for _, ws := range workspaceFolders {
-			cfg := path.Join(protocol.URI(ws.URI).Filename(), ConfigFilename)
-			if util.Exists(cfg) {
-				configFile = &cfg
+			o.workspacePath = protocol.URI(ws.URI).Filename()
+			configFilePath := filepath.Join(o.workspacePath, ConfigFilename)
+			if util.Exists(configFilePath) {
+				configFound = true
+				o.ShowInfo(fmt.Sprintf("Using config file '%s'", configFilePath))
+				break
 			}
 		}
-		if configFile != nil {
-			o.ShowWarning("No config file found. Starting in single-file mode.")
-		} else {
-			// ToDo: config file not supported yet :)
-			o.ShowWarning("Config file not yet supported. Starting in single-file mode.")
+		if !configFound {
+			o.ShowWarning("No config file found. Using default settings.")
 		}
 	}
 	return nil

@@ -9,11 +9,17 @@ import (
 )
 
 func (o *Handler) Formatting(ctx context.Context, params *protocol.DocumentFormattingParams) (result []protocol.TextEdit, err error) {
-	endLine, err := util.LineCounter(params.TextDocument.URI.Filename())
+	filename := params.TextDocument.URI.Filename()
+	endLine, err := util.LineCounter(filename)
 	if err != nil {
+		return nil, err
+	}
+	config := o.loadConfig()
+	if !config.Verible.Format.Enabled {
 		return
 	}
-	newText, err := verible.Format(params.TextDocument.URI.Filename())
+	newText, cmd, err := verible.Format(o.workspacePath, filename, config.Verible.Format.Arguments)
+	o.LogMessage(cmd)
 	result = []protocol.TextEdit{
 		{
 			Range: protocol.Range{

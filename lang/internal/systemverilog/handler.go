@@ -5,13 +5,13 @@ import (
 )
 
 const (
-	ServerName     = "Crowned SystemVerilog Language Server"
-	ServerVersion  = "0.0.1"
-	ConfigFilename = "crowned.toml"
+	ServerName    = "Crowned SystemVerilog Language Server"
+	ServerVersion = "0.0.1"
 )
 
 type Handler struct {
 	lsp.Handler
+	workspacePath string
 }
 
 func NewHandler() *Handler {

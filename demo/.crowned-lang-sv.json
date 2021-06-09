@@ -1,0 +1,25 @@
+{
+  "general": {
+    "includes": [],
+    "defines": []
+  },
+  "slang": {
+    "enabled": false,
+    "arguments": []
+  },
+  "svlint": {
+    "enabled": false,
+    "arguments": []
+  },
+  "verible": {
+    "lint": {
+      "enabled": false,
+      "arguments": [],
+      "rules": []
+    },
+    "format": {
+      "enabled": true,
+      "arguments": []
+    }
+  }
+}
