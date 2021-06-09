@@ -10,34 +10,69 @@ import (
 	"strings"
 )
 
-const lintCmd = "svlint"
+const (
+	lintCmd = "svlint"
+
+	failPrefix   = "Fail: "
+	hintPrefix   = "hint  : "
+	reasonPrefix = "reason: "
+)
 
 func Lint(filename string) (diagnostics []protocol.Diagnostic, cmdText string, err error) {
 	dir := filepath.Dir(filename)
 	base := filepath.Base(filename)
-	cmd := exec.Command(lintCmd, "-1", base)
+	cmd := exec.Command(lintCmd, base)
 	cmd.Dir = dir
 	cmdText = cmd.String()
 	data, _ := cmd.CombinedOutput()
-	lines := util.SplitLines(data)
+	lines := util.SplitLines(util.Decolorize(data))
 	diagnostics = make([]protocol.Diagnostic, 0)
+
+	index := 0
+	code := ""
+	lineNum := 1
+	colNum := 1
+	message := ""
 	for _, line := range lines {
-		terms := strings.Split(line, ":")
-		if len(terms) < 4 {
+		switch index {
+		case 0:
+			if strings.HasPrefix(line, failPrefix) {
+				index = 1
+				code = strings.TrimPrefix(line, failPrefix)
+				lineNum = 1
+				colNum = 1
+				message = ""
+			}
+			continue
+		case 1:
+			terms := strings.Split(line, ":")
+			if len(terms) < 3 {
+				continue
+			}
+			lineNum, err = strconv.Atoi(terms[1])
+			if err != nil {
+				continue
+			}
+			colNum, err = strconv.Atoi(terms[2])
+			if err != nil {
+				continue
+			}
+			index++
+			continue
+		case 4:
+			message = hintPrefix + util.StringListLast(strings.Split(line, hintPrefix)) + "\n"
+			index++
+			continue
+		case 5:
+			message += reasonPrefix + util.StringListLast(strings.Split(line, reasonPrefix)) + "\n"
+			index = 0
+			break
+
+		default:
+			index++
 			continue
 		}
-		lineNum, err := strconv.Atoi(terms[1])
-		if err != nil {
-			continue
-		}
-		terms[2] = strings.Split(terms[2], "\u001B[37m")[0]
-		colNum, err := strconv.Atoi(terms[2])
-		if err != nil {
-			continue
-		}
-		message := terms[len(terms)-1]
-		message = strings.Replace(message, "\u001B[0m", "", 1)
-		message = strings.TrimSpace(message)
+
 		severity := protocol.DiagnosticSeverityHint
 
 		diagnostics = append(diagnostics, protocol.Diagnostic{
@@ -52,8 +87,7 @@ func Lint(filename string) (diagnostics []protocol.Diagnostic, cmdText string, e
 				},
 			},
 			Severity:           severity,
-			Code:               nil,
-			CodeDescription:    nil,
+			Code:               code,
 			Source:             lintCmd,
 			Message:            message,
 			Tags:               nil,

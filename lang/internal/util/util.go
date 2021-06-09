@@ -73,3 +73,28 @@ func DecodeUTF16(b []byte) []byte {
 
 	return ret.Bytes()
 }
+
+// Todo: make this better
+type color []byte
+
+var (
+	colorRed    = color("\u001B[31m")
+	colorBlack  = color("\u001B[37m")
+	colorBlue   = color("\u001B[34m")
+	colorYellow = color("\u001B[33m")
+	colorEnd    = color("\u001B[0m")
+	colorNone   = color("")
+)
+
+func Decolorize(data []byte) []byte {
+	data = bytes.ReplaceAll(data, colorRed, colorNone)
+	data = bytes.ReplaceAll(data, colorBlack, colorNone)
+	data = bytes.ReplaceAll(data, colorBlue, colorNone)
+	data = bytes.ReplaceAll(data, colorYellow, colorNone)
+	data = bytes.ReplaceAll(data, colorEnd, colorNone)
+	return data
+}
+
+func StringListLast(list []string) string {
+	return list[len(list)-1]
+}
