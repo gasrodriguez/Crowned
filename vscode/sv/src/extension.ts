@@ -52,7 +52,11 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 function serverRestart() {
-    client.stop().then(() => client.start());
+    if (client.needsStart()) {
+        client.start();
+    } else {
+        client.stop().then(() => client.start());
+    }
 }
 
 // This method is called when your extension is deactivated

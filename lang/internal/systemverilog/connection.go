@@ -68,7 +68,7 @@ func (o *Handler) Initialized(ctx context.Context, params *protocol.InitializedP
 		return err
 	}
 	if workspaceFolders == nil || len(workspaceFolders) == 0 {
-		o.ShowWarning("No workspace folder found. Using default settings.")
+		o.ShowWarning("No workspace folder found.\nUsing default settings.")
 	} else {
 		configFound := false
 		for _, ws := range workspaceFolders {
@@ -76,12 +76,11 @@ func (o *Handler) Initialized(ctx context.Context, params *protocol.InitializedP
 			configFilePath := filepath.Join(o.workspacePath, ConfigFilename)
 			if util.Exists(configFilePath) {
 				configFound = true
-				o.ShowInfo(fmt.Sprintf("Using config file '%s'", configFilePath))
 				break
 			}
 		}
 		if !configFound {
-			o.ShowWarning("No config file found. Using default settings.")
+			o.ShowWarning("No config file found.\nUsing default settings.")
 		}
 	}
 	return nil

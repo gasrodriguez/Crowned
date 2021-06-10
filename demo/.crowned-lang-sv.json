@@ -1,32 +1,32 @@
 {
-  "general": {
-    "includes": [
-      "$UVM_HOME/src",
-      "tb_build/utils",
-      "tb_build/agents/spi_agent",
-      "tb_build/rtl/spi/rtl/verilog"
-    ],
-    "defines": []
-  },
-  "slang": {
-    "enabled": true,
-    "arguments": [
-      "$UVM_HOME/src/uvm_pkg.sv",
-      "tb_build/agents/spi_agent"
-    ]
-  },
-  "svlint": {
-    "enabled": false,
-    "arguments": []
-  },
-  "verible": {
-    "lint": {
-      "enabled": false,
-      "arguments": []
+    "general": {
+        "includes": [
+            "$UVM_HOME/src",
+            "tb_build/utils",
+            "tb_build/agents/spi_agent",
+            "tb_build/rtl/spi/rtl/verilog"
+        ],
+        "defines": []
     },
-    "format": {
-      "enabled": true,
-      "arguments": []
+    "slang": {
+        "enabled": true,
+        "arguments": [
+            "$UVM_HOME/src/uvm_pkg.sv",
+            "tb_build/agents/spi_agent"
+        ]
+    },
+    "svlint": {
+        "enabled": false,
+        "arguments": []
+    },
+    "verible": {
+        "lint": {
+            "enabled": false,
+            "arguments": []
+        },
+        "format": {
+            "enabled": true,
+            "arguments": []
+        }
     }
-  }
 }
