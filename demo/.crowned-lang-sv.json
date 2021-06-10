@@ -1,14 +1,20 @@
 {
   "general": {
-    "includes": ["tb_build/rtl/spi/rtl/verilog"],
+    "includes": [
+      "tb_build/rtl/spi/utils",
+      "tb_build/rtl/spi/rtl/verilog",
+      "$UVM_HOME"
+    ],
     "defines": []
   },
   "slang": {
-    "enabled": false,
-    "arguments": []
+    "enabled": true,
+    "arguments": [
+      "$UVM_HOME/src/uvm_pkg.sv"
+    ]
   },
   "svlint": {
-    "enabled": true,
+    "enabled": false,
     "arguments": []
   },
   "verible": {

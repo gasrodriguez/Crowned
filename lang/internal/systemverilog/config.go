@@ -3,6 +3,7 @@ package systemverilog
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/gasrodriguez/crowned/internal/util"
 	"io/ioutil"
 	"path/filepath"
 )
@@ -22,6 +23,13 @@ type Config struct {
 		Format toolConfig
 		Lint   veribleLintConfig
 	}
+}
+
+func (o *Config) ExpandEnv() {
+	util.ExpandEnvList(&o.General.Includes)
+	util.ExpandEnvList(&o.Slang.Arguments)
+	util.ExpandEnvList(&o.Svlint.Arguments)
+	util.ExpandEnvList(&o.Verible.Lint.Arguments)
 }
 
 type toolConfig struct {
@@ -55,5 +63,6 @@ func (o *Handler) loadConfig() Config {
 		o.ShowError(fmt.Sprintf("Cannot load config from file '%s'\nerror: '%s'", configPath, err.Error()))
 		return config
 	}
+	(&config).ExpandEnv()
 	return config
 }

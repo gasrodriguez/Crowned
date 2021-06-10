@@ -98,3 +98,13 @@ func Decolorize(data []byte) []byte {
 func StringListLast(list []string) string {
 	return list[len(list)-1]
 }
+
+func ExpandEnvList(listPtr *[]string) {
+	if listPtr == nil {
+		return
+	}
+	list := *listPtr
+	for i := range list {
+		list[i] = os.ExpandEnv(list[i])
+	}
+}

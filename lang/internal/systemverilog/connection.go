@@ -61,6 +61,7 @@ func (o *Handler) Initialize(ctx context.Context, params *protocol.InitializePar
 // Initialized implements initialized method.
 // https://microsoft.github.io/language-server-protocol/specification#initialized
 func (o *Handler) Initialized(ctx context.Context, params *protocol.InitializedParams) (err error) {
+	o.ShowMessage(fmt.Sprintf("%s started.", ServerName))
 	o.workspacePath = "."
 	workspaceFolders, err := o.Client.WorkspaceFolders(ctx)
 	if err != nil {
@@ -89,13 +90,13 @@ func (o *Handler) Initialized(ctx context.Context, params *protocol.InitializedP
 // Shutdown implements shutdown method.
 // https://microsoft.github.io/language-server-protocol/specification#shutdown
 func (o *Handler) Shutdown(ctx context.Context) (err error) {
-	o.ShowInfo(fmt.Sprintf("%s shutdown.", ServerName))
+	o.ShowMessage(fmt.Sprintf("%s shutdown.", ServerName))
 	return nil
 }
 
 // Exit implements exit method.
 // https://microsoft.github.io/language-server-protocol/specification#exit
 func (o *Handler) Exit(ctx context.Context) (err error) {
-	o.ShowInfo(fmt.Sprintf("%s exited.", ServerName))
+	o.ShowMessage(fmt.Sprintf("%s exited.", ServerName))
 	return nil
 }

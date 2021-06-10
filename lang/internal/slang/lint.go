@@ -12,7 +12,7 @@ import (
 
 const lintCmd = "slang"
 
-func Lint(cwd, filename string, args []string) (diagnostics []protocol.Diagnostic, cmdText string, err error) {
+func Lint(cwd, filename string, includes []string, args []string) (diagnostics []protocol.Diagnostic, cmdText string, err error) {
 	relPath, err := filepath.Rel(cwd, filename)
 	if err != nil {
 		relPath = filename
@@ -20,6 +20,9 @@ func Lint(cwd, filename string, args []string) (diagnostics []protocol.Diagnosti
 	args = append(args, "--lint-only")
 	args = append(args, "--quiet")
 	args = append(args, "--color-diagnostics=false")
+	for _, include := range includes {
+		args = append(args, "--include-directory="+include)
+	}
 	args = append(args, relPath)
 	cmd := exec.Command(lintCmd, args...)
 	cmd.Dir = cwd
