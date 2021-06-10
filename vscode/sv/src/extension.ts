@@ -6,10 +6,14 @@ const extensionDisplayName = 'Crowned';
 let client: vscodeClient.LanguageClient;
 
 export function activate(context: vscode.ExtensionContext) {
-    const server: string = vscode.workspace.getConfiguration().get("crowned.serverCommand")!;
+    const serverCmd: string = vscode.workspace.getConfiguration().get("crowned.serverCommand")!;
+    const serverEnv: any = vscode.workspace.getConfiguration().get("crowned.serverEnv");
 
     const run: vscodeClient.Executable = {
-        command: server,
+        command: serverCmd,
+        options: {
+            env: serverEnv
+        }
     };
 
     // If the extension is launched in debug mode then the debug server options are used
@@ -42,7 +46,14 @@ export function activate(context: vscode.ExtensionContext) {
 
     // Start the client. This will also launch the server
     client.start();
+
+    // Register command to restart server
+    context.subscriptions.push(vscode.commands.registerCommand('crowned.serverRestart', serverRestart));
 }
 
-// this method is called when your extension is deactivated
+function serverRestart() {
+    client.stop().then(() => client.start());
+}
+
+// This method is called when your extension is deactivated
 export function deactivate() { client.stop(); }
