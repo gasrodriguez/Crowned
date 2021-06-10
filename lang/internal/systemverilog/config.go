@@ -21,7 +21,7 @@ type Config struct {
 	Svlint  toolConfig
 	Verible struct {
 		Format toolConfig
-		Lint   veribleLintConfig
+		Lint   toolConfig
 	}
 }
 
@@ -35,12 +35,6 @@ func (o *Config) ExpandEnv() {
 type toolConfig struct {
 	Enabled   bool
 	Arguments []string
-}
-
-type veribleLintConfig struct {
-	Enabled   bool
-	Arguments []string
-	Rules     []string
 }
 
 func (o *Handler) loadConfig() Config {

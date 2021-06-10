@@ -32,7 +32,7 @@ func Lint(cwd, filename string, includes []string, args []string) (diagnostics [
 	diagnostics = make([]protocol.Diagnostic, 0)
 	for _, line := range lines {
 		terms := strings.Split(line, ":")
-		if len(terms) < 4 {
+		if len(terms) < 4 || terms[0] != relPath {
 			continue
 		}
 		lineNum, err := strconv.Atoi(terms[1])

@@ -48,7 +48,7 @@ func (o *Handler) publishDiagnostics(ctx context.Context, uri protocol.DocumentU
 	}
 
 	if config.Verible.Lint.Enabled {
-		diagnosticsVerible, cmd, err := verible.Lint(o.workspacePath, uri.Filename(), config.Verible.Lint.Arguments, config.Verible.Lint.Rules)
+		diagnosticsVerible, cmd, err := verible.Lint(o.workspacePath, uri.Filename(), config.Verible.Lint.Arguments)
 		o.LogMessage(cmd)
 		if err != nil {
 			o.LogError(fmt.Sprintf("Failed to lint file '%s', error '%s'", uri.Filename(), err.Error()))
