@@ -62,7 +62,8 @@ func Lint(cwd, filename string, includes []string, args []string) (diagnostics [
 
 		case 1:
 			terms := strings.Split(line, ":")
-			if len(terms) < 3 {
+			if len(terms) < 4 || terms[0] != relPath {
+				index = 0
 				continue
 			}
 			lineNum, err = strconv.Atoi(terms[1])

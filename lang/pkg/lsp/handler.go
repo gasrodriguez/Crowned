@@ -27,6 +27,7 @@ func (o *Handler) Run(server protocol.Server, args []string) {
 	//cfg.OutputPaths = []string{
 	//	"log.txt",
 	//}
+	cfg.Level = zap.NewAtomicLevel()
 	logger, err := cfg.Build()
 	if err != nil {
 		log.Printf("failed to create logger: %v\n", err)

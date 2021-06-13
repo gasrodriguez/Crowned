@@ -10,7 +10,6 @@ import (
 )
 
 func (o *Handler) Formatting(ctx context.Context, params *protocol.DocumentFormattingParams) (result []protocol.TextEdit, err error) {
-	o.LogMessage("received formatting req")
 	filename := params.TextDocument.URI.Filename()
 	endLine, err := util.LineCounter(filename)
 	if err != nil {
