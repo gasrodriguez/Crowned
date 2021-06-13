@@ -10,18 +10,15 @@
     },
     "slang": {
         "enabled": true,
-        "arguments": [
-            "$UVM_HOME/src/uvm_pkg.sv",
-            "tb_build/agents/spi_agent"
-        ]
+        "arguments": []
     },
     "svlint": {
-        "enabled": false,
+        "enabled": true,
         "arguments": []
     },
     "verible": {
         "lint": {
-            "enabled": false,
+            "enabled": true,
             "arguments": []
         },
         "format": {

@@ -22,6 +22,7 @@ func Lint(cwd, filename string, includes []string, args []string) (diagnostics [
 	args = append(args, "--color-diagnostics=false")
 	for _, include := range includes {
 		args = append(args, "--include-directory="+include)
+		args = append(args, "--libdir="+include)
 	}
 	args = append(args, relPath)
 	cmd := exec.Command(lintCmd, args...)

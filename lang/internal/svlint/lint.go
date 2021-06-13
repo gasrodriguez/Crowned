@@ -31,7 +31,7 @@ func Lint(cwd, filename string, includes []string, args []string) (diagnostics [
 	cmd := exec.Command(lintCmd, args...)
 	cmd.Dir = cwd
 	cmdText = cmd.String()
-	data, err := cmd.CombinedOutput()
+	data, _ := cmd.CombinedOutput()
 	lines := util.SplitLines(util.Decolorize(data))
 	diagnostics = make([]protocol.Diagnostic, 0)
 
@@ -62,7 +62,7 @@ func Lint(cwd, filename string, includes []string, args []string) (diagnostics [
 
 		case 1:
 			terms := strings.Split(line, ":")
-			if len(terms) < 4 || terms[0] != relPath {
+			if len(terms) < 3 || !strings.Contains(terms[0], relPath) {
 				index = 0
 				continue
 			}
