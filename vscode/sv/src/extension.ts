@@ -49,6 +49,9 @@ export function activate(context: vscode.ExtensionContext) {
 
     // Register command to restart server
     context.subscriptions.push(vscode.commands.registerCommand('crowned.serverRestart', serverRestart));
+
+    // Register format after save command, because lang server only can format after doc is saved
+    context.subscriptions.push(vscode.workspace.onDidSaveTextDocument(formatAfterSave));
 }
 
 function serverRestart() {
@@ -57,6 +60,10 @@ function serverRestart() {
     } else {
         client.stop().then(() => client.start());
     }
+}
+
+function formatAfterSave(_: vscode.TextDocument) {
+    vscode.commands.executeCommand('editor.action.formatDocument')
 }
 
 // This method is called when your extension is deactivated
