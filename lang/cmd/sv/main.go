@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gasrodriguez/crowned/internal/systemverilog"
 	"os"
+	"strings"
 )
 
 const (
@@ -35,9 +36,10 @@ func main() {
 }
 
 func version() string {
-	result := fmt.Sprintf("%s (%s)\n", systemverilog.ServerName, systemverilog.ServerVersion)
-	result += "Git branch: " + gitBranch + eol
-	result += "Git Commit: " + gitCommit + eol
-	result += "Build time: " + buildTime + eol
-	return result
+	return strings.Join([]string{
+		fmt.Sprintf("%s (%s)", systemverilog.ServerName, systemverilog.ServerVersion),
+		"Git branch: " + gitBranch,
+		"Git Commit: " + gitCommit,
+		"Build time: " + buildTime,
+	}, eol)
 }
