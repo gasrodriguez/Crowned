@@ -1,127 +1,127 @@
 {
-  "name": "crowned",
-  "displayName": "Crowned",
-  "description": "SystemVerilog Linter and Formatter with Verible",
-  "version": "0.0.1",
-  "publisher": "gasrodriguez",
-  "author": {
-    "name": "Gastón Rodriguez",
-    "email": "gastonerodriguez@gmail.com"
-  },
-  "license": "MIT",
-  "categories": [
-    "Programming Languages",
-    "Snippets",
-    "Linters",
-    "Formatters"
-  ],
-  "keywords": [
-    "verilog",
-    "systemverilog",
-    "lsp",
-    "hdl"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/gasrodriguez/crowned"
-  },
-  "activationEvents": [
-    "onLanguage:systemverilog",
-    "onLanguage:verilog"
-  ],
-  "main": "./out/extension.js",
-  "contributes": {
-    "commands": [
-      {
-        "command": "crowned.serverRestart",
-        "title": "Crowned: restart SV language server"
-      }
+    "name": "crowned",
+    "displayName": "Crowned",
+    "description": "SystemVerilog Linter and Formatter with Verible",
+    "version": "0.0.1",
+    "publisher": "gasrodriguez",
+    "author": {
+        "name": "Gastón Rodriguez",
+        "email": "gastonerodriguez@gmail.com"
+    },
+    "license": "MIT",
+    "categories": [
+        "Programming Languages",
+        "Snippets",
+        "Linters",
+        "Formatters"
     ],
-    "configuration": [
-      {
-        "title": "Crowned",
-        "properties": {
-          "crowned.serverCommand": {
-            "type": "string",
-            "default": "crowned-lang-sv",
-            "description": "SV language server command"
-          },
-          "crowned.serverEnv": {
-            "type": "object",
-            "default": {
-              "UVM_HOME": "/usr/local/lib/uvm-1.2"
+    "keywords": [
+        "verilog",
+        "systemverilog",
+        "lsp",
+        "hdl"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/gasrodriguez/crowned"
+    },
+    "activationEvents": [
+        "onLanguage:systemverilog",
+        "onLanguage:verilog"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "crowned.serverRestart",
+                "title": "Crowned: restart SV language server"
+            }
+        ],
+        "configuration": [
+            {
+                "title": "Crowned",
+                "properties": {
+                    "crowned.serverCommand": {
+                        "type": "string",
+                        "default": "crowned-lang-sv",
+                        "description": "SV language server command"
+                    },
+                    "crowned.serverEnv": {
+                        "type": "object",
+                        "default": {
+                            "UVM_HOME": "/usr/local/lib/uvm-1.2"
+                        },
+                        "description": "SV language server env variables"
+                    }
+                }
+            }
+        ],
+        "languages": [
+            {
+                "id": "systemverilog",
+                "aliases": [
+                    "SystemVerilog",
+                    "systemverilog",
+                    "System Verilog",
+                    "Systemverilog"
+                ],
+                "extensions": [
+                    ".sv",
+                    ".svh"
+                ],
+                "configuration": "./grammars/language-configuration.json"
             },
-            "description": "SV language server env variables"
-          }
-        }
-      }
-    ],
-    "languages": [
-      {
-        "id": "systemverilog",
-        "aliases": [
-          "SystemVerilog",
-          "systemverilog",
-          "System Verilog",
-          "Systemverilog"
+            {
+                "id": "verilog",
+                "aliases": [
+                    "Verilog",
+                    "verilog"
+                ],
+                "extensions": [
+                    ".v",
+                    ".vh"
+                ],
+                "configuration": "./grammars/language-configuration.json"
+            }
         ],
-        "extensions": [
-          ".sv",
-          ".svh"
-        ],
-        "configuration": "./grammars/language-configuration.json"
-      },
-      {
-        "id": "verilog",
-        "aliases": [
-          "Verilog",
-          "verilog"
-        ],
-        "extensions": [
-          ".v",
-          ".vh"
-        ],
-        "configuration": "./grammars/language-configuration.json"
-      }
-    ],
-    "grammars": [
-      {
-        "language": "systemverilog",
-        "scopeName": "source.systemverilog",
-        "path": "./grammars/systemverilog.tmLanguage.json"
-      },
-      {
-        "language": "verilog",
-        "scopeName": "source.systemverilog",
-        "path": "./grammars/systemverilog.tmLanguage.json"
-      }
-    ]
-  },
-  "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "pretest": "npm run compile && npm run lint",
-    "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js"
-  },
-  "engines": {
-    "vscode": "^1.52.0"
-  },
-  "dependencies": {
-    "glob": "^7.1.7",
-    "vscode-languageclient": "^6.1.3"
-  },
-  "devDependencies": {
-    "@types/glob": "7.1.3",
-    "@types/mocha": "^8.2.0",
-    "@types/node": "^14.14.13",
-    "@types/vscode": "1.52.0",
-    "@typescript-eslint/parser": "^4.10.0",
-    "eslint": "^7.16.0",
-    "esnext": "^3.3.1",
-    "mocha": "^8.2.1",
-    "typescript": "^4.1.2",
-    "vscode-test": "^1.4.1"
-  }
+        "grammars": [
+            {
+                "language": "systemverilog",
+                "scopeName": "source.systemverilog",
+                "path": "./grammars/systemverilog.tmLanguage.json"
+            },
+            {
+                "language": "verilog",
+                "scopeName": "source.systemverilog",
+                "path": "./grammars/systemverilog.tmLanguage.json"
+            }
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "pretest": "npm run compile && npm run lint",
+        "lint": "eslint src --ext ts",
+        "test": "node ./out/test/runTest.js"
+    },
+    "engines": {
+        "vscode": "^1.52.0"
+    },
+    "dependencies": {
+        "glob": "^7.1.7",
+        "vscode-languageclient": "^6.1.3"
+    },
+    "devDependencies": {
+        "@types/glob": "7.1.3",
+        "@types/mocha": "^8.2.0",
+        "@types/node": "^14.14.13",
+        "@types/vscode": "1.52.0",
+        "@typescript-eslint/parser": "^4.10.0",
+        "eslint": "^7.16.0",
+        "esnext": "^3.3.1",
+        "mocha": "^8.2.1",
+        "typescript": "^4.1.2",
+        "vscode-test": "^1.4.1"
+    }
 }

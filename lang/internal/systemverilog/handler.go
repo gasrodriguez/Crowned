@@ -5,8 +5,11 @@ import (
 )
 
 const (
-	ServerName    = "Crowned SystemVerilog Language Server"
-	ServerVersion = "0.0.1"
+	ServerName = "Crowned SystemVerilog Language Server"
+)
+
+var (
+	ServerVersion = "0.0.0"
 )
 
 type Handler struct {
