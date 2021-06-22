@@ -83,6 +83,7 @@ func (o *Handler) Initialized(ctx context.Context, params *protocol.InitializedP
 			o.ShowWarning("No config file found.\nUsing default settings.")
 		}
 	}
+	o.files.ScanWorkspace(o.workspacePath, []string{})
 	return nil
 }
 

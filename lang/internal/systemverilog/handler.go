@@ -15,8 +15,11 @@ var (
 type Handler struct {
 	lsp.Handler
 	workspacePath string
+	files         *files
 }
 
 func NewHandler() *Handler {
-	return &Handler{}
+	h := &Handler{}
+	h.files = NewFiles()
+	return h
 }
