@@ -14,13 +14,22 @@ func (o *Handler) publishDiagnostics(ctx context.Context, uri protocol.DocumentU
 	config := o.loadConfig()
 
 	if config.Slang.Enabled {
-		diagnosticsSlang, cmd, err := slang.Lint(o.workspacePath, uri.Filename(), config.General.Includes, config.Slang.Arguments)
+		compileFiles := o.files.CompileFiles()
+		includeDirs := o.files.IncludeDirs()
+		diagnosticsSlang, cmd, err := slang.Compile(o.workspacePath, compileFiles, includeDirs, config.General.Includes, config.Slang.Arguments)
 		o.LogMessage(cmd)
 		if err != nil {
 			o.LogError(fmt.Sprintf("Failed to lint file '%s', error '%s'", uri.Filename(), err.Error()))
 		} else {
 			diagnostics = append(diagnostics, diagnosticsSlang...)
 		}
+		//diagnosticsSlang, cmd, err := slang.Lint(o.workspacePath, uri.Filename(), config.General.Includes, config.Slang.Arguments)
+		//o.LogMessage(cmd)
+		//if err != nil {
+		//	o.LogError(fmt.Sprintf("Failed to lint file '%s', error '%s'", uri.Filename(), err.Error()))
+		//} else {
+		//	diagnostics = append(diagnostics, diagnosticsSlang...)
+		//}
 	}
 
 	if config.Svlint.Enabled {

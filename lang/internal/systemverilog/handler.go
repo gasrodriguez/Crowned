@@ -30,7 +30,7 @@ func NewHandler() *Handler {
 func (o *Handler) Formatting(ctx context.Context, params *protocol.DocumentFormattingParams) (result []protocol.TextEdit, err error) {
 	if o.files.isModified(params.TextDocument.URI.Filename()) {
 		// User must turn auto-save on so files won't be in state modified for long
-		return
+		return nil, protocol.ErrContentModified
 	}
 	return o.doFormatting(ctx, params)
 }
