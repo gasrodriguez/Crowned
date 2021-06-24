@@ -16,6 +16,7 @@ type Config struct {
 	General struct {
 		Includes []string
 		Defines  []string
+		Filters  []string
 	}
 	Slang   toolConfig
 	Svlint  toolConfig

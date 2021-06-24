@@ -9,7 +9,7 @@ import (
 	"math"
 )
 
-func (o *Handler) Formatting(ctx context.Context, params *protocol.DocumentFormattingParams) (result []protocol.TextEdit, err error) {
+func (o *Handler) doFormatting(_ context.Context, params *protocol.DocumentFormattingParams) (result []protocol.TextEdit, err error) {
 	filename := params.TextDocument.URI.Filename()
 	endLine, err := util.LineCounter(filename)
 	if err != nil {
@@ -43,14 +43,3 @@ func (o *Handler) Formatting(ctx context.Context, params *protocol.DocumentForma
 	}
 	return result, err
 }
-
-//func (s *Server) OnTypeFormatting(ctx context.Context, params *protocol.DocumentOnTypeFormattingParams) (result []protocol.TextEdit, err error) {
-//	err = notImplemented("OnTypeFormatting")
-//	return
-//}
-//
-//func (s *Server) RangeFormatting(ctx context.Context, params *protocol.DocumentRangeFormattingParams) (result []protocol.TextEdit, err error) {
-//	err = notImplemented("RangeFormatting")
-//	return
-//}
-//

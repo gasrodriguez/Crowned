@@ -9,20 +9,6 @@ import (
 	"go.lsp.dev/protocol"
 )
 
-// DidOpen implements textDocument/didOpen method.
-// https://microsoft.github.io/language-server-protocol/specification#textDocument_didOpen
-func (o *Handler) DidOpen(ctx context.Context, params *protocol.DidOpenTextDocumentParams) (err error) {
-	go o.publishDiagnostics(ctx, params.TextDocument.URI)
-	return nil
-}
-
-// DidSave implements textDocument/didSave method.
-// https://microsoft.github.io/language-server-protocol/specification#textDocument_didSave
-func (o *Handler) DidSave(ctx context.Context, params *protocol.DidSaveTextDocumentParams) (err error) {
-	go o.publishDiagnostics(context.TODO(), params.TextDocument.URI)
-	return nil
-}
-
 func (o *Handler) publishDiagnostics(ctx context.Context, uri protocol.DocumentURI) {
 	diagnostics := make([]protocol.Diagnostic, 0)
 	config := o.loadConfig()
@@ -68,9 +54,7 @@ func (o *Handler) publishDiagnostics(ctx context.Context, uri protocol.DocumentU
 	}
 }
 
-// DidClose implements textDocument/didClose method.
-// https://microsoft.github.io/language-server-protocol/specification#textDocument_didClose
-func (o *Handler) DidClose(ctx context.Context, params *protocol.DidCloseTextDocumentParams) (err error) {
+func (o *Handler) clearDiagnostics(ctx context.Context, params *protocol.DidCloseTextDocumentParams) (err error) {
 	uri := params.TextDocument.URI
 	err = o.Client.PublishDiagnostics(ctx, &protocol.PublishDiagnosticsParams{
 		URI:         uri,

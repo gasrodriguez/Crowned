@@ -29,7 +29,10 @@ func (o *Set) Keys() []string {
 	return keys
 }
 
-func NewSet() *Set {
-	unique := make(Set)
-	return &unique
+func NewSet(items ...string) *Set {
+	set := make(Set)
+	for _, item := range items {
+		set.Add(item)
+	}
+	return &set
 }

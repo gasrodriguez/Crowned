@@ -8,9 +8,7 @@ import (
 	"path/filepath"
 )
 
-// Initialize implements initialize method.
-// https://microsoft.github.io/language-server-protocol/specification#initialize
-func (o *Handler) Initialize(ctx context.Context, params *protocol.InitializeParams) (result *protocol.InitializeResult, err error) {
+func (o *Handler) doInitialize(_ context.Context, _ *protocol.InitializeParams) (result *protocol.InitializeResult, err error) {
 	return &protocol.InitializeResult{
 		Capabilities: protocol.ServerCapabilities{
 			TextDocumentSync: protocol.TextDocumentSyncOptions{
@@ -58,9 +56,7 @@ func (o *Handler) Initialize(ctx context.Context, params *protocol.InitializePar
 	}, nil
 }
 
-// Initialized implements initialized method.
-// https://microsoft.github.io/language-server-protocol/specification#initialized
-func (o *Handler) Initialized(ctx context.Context, params *protocol.InitializedParams) (err error) {
+func (o *Handler) doInitialized(ctx context.Context, _ *protocol.InitializedParams) (err error) {
 	o.ShowMessage(fmt.Sprintf("%s started.", ServerName))
 	o.workspacePath = "."
 	workspaceFolders, err := o.Client.WorkspaceFolders(ctx)
@@ -83,20 +79,7 @@ func (o *Handler) Initialized(ctx context.Context, params *protocol.InitializedP
 			o.ShowWarning("No config file found.\nUsing default settings.")
 		}
 	}
-	o.files.ScanWorkspace(o.workspacePath, []string{})
-	return nil
-}
-
-// Shutdown implements shutdown method.
-// https://microsoft.github.io/language-server-protocol/specification#shutdown
-func (o *Handler) Shutdown(ctx context.Context) (err error) {
-	o.ShowMessage(fmt.Sprintf("%s shutdown.", ServerName))
-	return nil
-}
-
-// Exit implements exit method.
-// https://microsoft.github.io/language-server-protocol/specification#exit
-func (o *Handler) Exit(ctx context.Context) (err error) {
-	o.ShowMessage(fmt.Sprintf("%s exited.", ServerName))
+	config := o.loadConfig()
+	o.files.ScanWorkspace(o.workspacePath, config.General.Filters)
 	return nil
 }
